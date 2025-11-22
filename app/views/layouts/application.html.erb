@@ -16,20 +16,36 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <script>
+      if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
   </head>
-  <body class="bg-white text-black">
-    <header class="bg-gray-100 border-b">
-      <nav class="container mx-auto px-5 py-3 flex items-center justify-between">
+  <body class="bg-white dark:bg-gray-950 text-black dark:text-white transition-colors">
+    <header class="bg-gray-900 dark:bg-gray-950 border-b border-gray-800 dark:border-gray-900">
+      <nav class="container mx-auto px-5 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <a href="/" class="font-semibold text-lg">Irl2</a>
+          <a href="/" class="font-black text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 hover:from-blue-300 hover:to-emerald-300 transition">IRL2</a>
         </div>
-        <div class="flex items-center space-x-4">
-          <a href="/" class="text-gray-700 hover:text-gray-900">Home</a>
-          <a href="/users" class="text-gray-700 hover:text-gray-900">Users</a>
-          <a href="#" class="text-gray-700 hover:text-gray-900">Tasks</a>
+        <div class="flex items-center space-x-6">
+          <a href="/" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Home</a>
+          <a href="/users" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Users</a>
+          <a href="#" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Tasks</a>
+          <button id="darkModeToggle" class="px-3 py-2 text-gray-300 hover:text-white transition text-xl" aria-label="Toggle dark mode">
+            <span class="dark:hidden">🌙</span>
+            <span class="hidden dark:inline">☀️</span>
+          </button>
+          <a href="/users/sign_up" class="px-4 py-2 bg-emerald-500 text-black font-bold text-xs uppercase tracking-wider hover:bg-emerald-400 transition rounded">Join</a>
         </div>
       </nav>
     </header>
+    <script>
+      document.getElementById('darkModeToggle').addEventListener('click', function() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', isDark);
+      });
+    </script>
     <main class="container mx-auto mt-8 px-5 flex">
       <p class="notice"><%= notice %></p>
       <p class="alert"><%= alert %></p>

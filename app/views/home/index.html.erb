@@ -1,4 +1,134 @@
-<div>
-  <h1 class="font-bold text-4xl">Home#index</h1>
-  <p>Find me in app/views/home/index.html.erb</p>
+<div class="w-full text-gray-800 dark:text-gray-200 font-sans">
+  <!-- Hero Section: Mysterious & Inviting -->
+  <section class="relative py-24 md:py-32 overflow-hidden bg-gray-900 dark:bg-gray-800 text-white rounded-3xl shadow-2xl mb-16">
+    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+    <div class="relative container mx-auto px-6 text-center z-10">
+      <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 animate-pulse">
+        PLAY YOUR CITY
+      </h1>
+      <p class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-300 font-light leading-relaxed mb-10">
+        The interface for collaborative reality hacking. Turn your neighborhood into a game board. 
+        Join a global network of users creating and solving real-world tasks.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-6">
+        <a href="/users/sign_up" class="px-10 py-4 bg-emerald-500 text-black font-bold text-lg uppercase tracking-widest hover:bg-emerald-400 hover:scale-105 transition transform shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+          Join Now
+        </a>
+        <a href="/challenges" class="px-10 py-4 border border-gray-600 hover:border-white text-gray-300 hover:text-white font-bold text-lg uppercase tracking-widest transition backdrop-blur-sm bg-white/5">
+          Browse Tasks
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- The System / How It Works -->
+  <section class="py-16 px-4 max-w-6xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold uppercase tracking-widest text-gray-900 dark:text-gray-100 border-b-2 border-black dark:border-gray-100 inline-block pb-2">System Protocol</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 relative">
+      <!-- Connecting Line (Desktop) -->
+      <div class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gray-200 -z-10"></div>
+
+      <!-- Step 1 -->
+      <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition duration-300 group">
+        <div class="w-24 h-24 mx-auto bg-gray-900 dark:bg-gray-700 text-white rounded-full flex items-center justify-center text-4xl mb-6 group-hover:bg-emerald-500 transition-colors">
+          ⚡️
+        </div>
+        <h3 class="text-xl font-bold text-center mb-3 uppercase dark:text-white">Design Tasks</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-center leading-relaxed">
+          As a user, you create imaginative challenges for others. From "Find a hidden door" to "Host a tea party for strangers."
+        </p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition duration-300 group">
+        <div class="w-24 h-24 mx-auto bg-gray-900 dark:bg-gray-700 text-white rounded-full flex items-center justify-center text-4xl mb-6 group-hover:bg-blue-500 transition-colors">
+          📸
+        </div>
+        <h3 class="text-xl font-bold text-center mb-3 uppercase dark:text-white">Execute & Verify</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-center leading-relaxed">
+          Accept a task. Go out into the physical world. Complete the objective and upload photo/video proof with your field report.
+        </p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition duration-300 group">
+        <div class="w-24 h-24 mx-auto bg-gray-900 dark:bg-gray-700 text-white rounded-full flex items-center justify-center text-4xl mb-6 group-hover:bg-purple-500 transition-colors">
+          🏆
+        </div>
+        <h3 class="text-xl font-bold text-center mb-3 uppercase dark:text-white">Gain Reputation</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-center leading-relaxed">
+          The network validates your work. Receive upvotes, comments, and badges. Level up your status and unlock new sectors.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Activity / Flavor Section -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-900 -mx-5 px-5">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center justify-between mb-10">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Latest Field Reports</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400 font-mono">LIVE FEED // ENCRYPTED</span>
+      </div>
+      
+      <div class="space-y-4">
+        <!-- Fake Entry 1 -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-6 items-start">
+          <div class="w-full md:w-48 h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 bg-[url('https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=300&q=80')] bg-cover bg-center">
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded uppercase">Completed</span>
+              <span class="text-gray-500 text-sm font-mono">Task #8291: "Urban Archaeology"</span>
+            </div>
+            <h3 class="text-lg font-bold mb-2 dark:text-white">Found a relic from 1995 behind the library</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+              "I dug around the old foundation as instructed. Found a soda can and this strange plastic toy..."
+            </p>
+            <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+              <span><strong>NeonTiger</strong></span>
+              <span>•</span>
+              <span>2 hours ago</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fake Entry 2 -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-6 items-start">
+          <div class="w-full md:w-48 h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 bg-[url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=300&q=80')] bg-cover bg-center">
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded uppercase">New Challenge</span>
+              <span class="text-gray-500 text-sm font-mono">Task #8292</span>
+            </div>
+            <h3 class="text-lg font-bold mb-2 dark:text-white">Task: The Midnight Coffee Run</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+              "Go to a 24-hour diner between 3 AM and 4 AM. Order a black coffee. Leave a poem on a napkin for the next person..."
+            </p>
+            <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+              <span><strong>NightOwl</strong></span>
+              <span>•</span>
+              <span>45 mins ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-10">
+        <a href="#" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">View All Transmissions &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer / Manifesto -->
+  <section class="py-20 text-center max-w-3xl mx-auto space-y-6">
+    <h2 class="text-3xl font-black italic dark:text-white">"Reality is the ultimate playground."</h2>
+    <p class="text-xl text-gray-500 dark:text-gray-400">
+      Join us. Break the routine. Make art out of life.
+    </p>
+  </section>
 </div>
