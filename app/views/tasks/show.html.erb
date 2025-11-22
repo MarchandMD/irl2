@@ -1,0 +1,177 @@
+<div class="w-full max-w-5xl mx-auto">
+  <!-- Back Navigation -->
+  <div class="mb-6">
+    <%= link_to tasks_path, class: "inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition font-medium" do %>
+      <span>←</span>
+      <span>Back to Tasks</span>
+    <% end %>
+  </div>
+
+  <!-- Task Header -->
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 mb-6">
+    <div class="flex items-start gap-6 mb-6">
+      <!-- Task Number -->
+      <div class="flex-shrink-0 w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg flex items-center justify-center font-mono text-2xl font-bold">
+        #<%= @task.id %>
+      </div>
+
+      <!-- Title and Status -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h1 class="text-3xl font-black text-gray-900 dark:text-white">
+            <%= @task.title %>
+          </h1>
+          <%
+            status_config = case @task.status
+              when 'open'
+                { color: 'green', text: 'Open' }
+              when 'in_progress'
+                { color: 'blue', text: 'In Progress' }
+              when 'completed'
+                { color: 'gray', text: 'Completed' }
+              else
+                { color: 'gray', text: @task.status.titleize }
+            end
+          %>
+          <span class="flex-shrink-0 px-4 py-2 bg-<%= status_config[:color] %>-100 dark:bg-<%= status_config[:color] %>-900/30 text-<%= status_config[:color] %>-800 dark:text-<%= status_config[:color] %>-400 text-sm font-bold uppercase rounded-full">
+            <%= status_config[:text] %>
+          </span>
+        </div>
+
+        <!-- Task Meta Info -->
+        <div class="flex flex-wrap items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+          <div class="flex items-center gap-2">
+            <span class="font-mono">👤</span>
+            <span>Created by <strong class="text-gray-700 dark:text-gray-300"><%= @task.user.email.split('@').first %></strong></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span>📅</span>
+            <span><%= @task.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span>⏱️</span>
+            <span><%= time_ago_in_words(@task.created_at) %> ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <button class="px-6 py-2 bg-emerald-500 text-black font-bold text-sm uppercase tracking-wider hover:bg-emerald-400 transition rounded">
+        ⬆️ Upvote (<%= @task.upvotes_count %>)
+      </button>
+      <button class="px-6 py-2 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded">
+        Submit Solution
+      </button>
+      <button class="px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded">
+        🔖 Bookmark
+      </button>
+      <button class="px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded">
+        🔗 Share
+      </button>
+    </div>
+  </div>
+
+  <!-- Task Stats Row -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div class="text-4xl font-black text-emerald-600 dark:text-emerald-400 mb-2"><%= @task.upvotes_count %></div>
+      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Upvotes</div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div class="text-4xl font-black text-blue-600 dark:text-blue-400 mb-2"><%= @task.submissions_count %></div>
+      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Submissions</div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div class="text-4xl font-black text-purple-600 dark:text-purple-400 mb-2">0</div>
+      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Comments</div>
+    </div>
+  </div>
+
+  <!-- Task Description -->
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 mb-6">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-tight">Description</h2>
+    <div class="prose prose-lg dark:prose-invert max-w-none">
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+        <%= @task.description %>
+      </p>
+    </div>
+  </div>
+
+  <!-- Task Details Section -->
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 mb-6">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-tight">Task Details</h2>
+
+    <div class="space-y-4">
+      <div class="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Task ID</span>
+        <span class="font-mono text-gray-900 dark:text-white font-bold">#<%= @task.id %></span>
+      </div>
+
+      <div class="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Status</span>
+        <span class="px-3 py-1 bg-<%= status_config[:color] %>-100 dark:bg-<%= status_config[:color] %>-900/30 text-<%= status_config[:color] %>-800 dark:text-<%= status_config[:color] %>-400 text-xs font-bold uppercase rounded-full">
+          <%= status_config[:text] %>
+        </span>
+      </div>
+
+      <div class="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Creator</span>
+        <span class="text-gray-900 dark:text-white font-medium"><%= @task.user.email %></span>
+      </div>
+
+      <div class="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Created</span>
+        <span class="text-gray-900 dark:text-white font-medium"><%= @task.created_at.strftime("%B %d, %Y") %></span>
+      </div>
+
+      <div class="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Last Updated</span>
+        <span class="text-gray-900 dark:text-white font-medium"><%= @task.updated_at.strftime("%B %d, %Y") %></span>
+      </div>
+
+      <div class="flex items-center justify-between py-3">
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Engagement</span>
+        <span class="text-gray-900 dark:text-white font-medium"><%= @task.upvotes_count + @task.submissions_count %> total interactions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submissions Section (Placeholder) -->
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 mb-6">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-tight">Submissions</h2>
+
+    <% if @task.submissions_count > 0 %>
+      <div class="text-center py-8">
+        <div class="text-5xl mb-4">📝</div>
+        <p class="text-gray-600 dark:text-gray-400 mb-2">
+          <strong class="text-2xl text-gray-900 dark:text-white"><%= @task.submissions_count %></strong>
+          <%= @task.submissions_count == 1 ? 'submission' : 'submissions' %> received
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-500">Submission details coming soon</p>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <div class="text-5xl mb-4">📝</div>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">No submissions yet. Be the first to submit a solution!</p>
+        <button class="px-6 py-3 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded">
+          Submit First Solution
+        </button>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Comments Section (Placeholder) -->
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-tight">Comments</h2>
+
+    <div class="text-center py-8">
+      <div class="text-5xl mb-4">💬</div>
+      <p class="text-gray-600 dark:text-gray-400 mb-4">No comments yet. Start the conversation!</p>
+      <button class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-sm uppercase tracking-wider hover:bg-gray-300 dark:hover:bg-gray-600 transition rounded">
+        Add Comment
+      </button>
+    </div>
+  </div>
+</div>

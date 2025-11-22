@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  get "tasks/index"
   devise_for :users
   get "up" => "rails/health#show", as: :rails_health_check
   resources :users
   resources :tasks
+  get "/about", to: "about#index"
   root "home#index"
 end
