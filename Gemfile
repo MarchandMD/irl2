@@ -57,3 +57,7 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 end
+
+gem "tidewave", "~> 0.4.0", group: :development
+
+gem "devise", "~> 4.9"
