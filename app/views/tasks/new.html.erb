@@ -1,0 +1,98 @@
+<div class="w-full max-w-4xl mx-auto">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <h1 class="text-4xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-2">Create New Task</h1>
+    <p class="text-gray-600 dark:text-gray-400 text-lg">Share a real-world challenge with the community</p>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 shadow-sm">
+    <%= form_with model: @task, url: tasks_path, method: :post, class: "space-y-6" do |f| %>
+
+      <!-- Display Errors -->
+      <% if @task.errors.any? %>
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <h3 class="text-red-800 dark:text-red-300 font-bold text-sm uppercase tracking-wide mb-2">
+            <%= pluralize(@task.errors.count, "error") %> prevented this task from being saved:
+          </h3>
+          <ul class="list-disc list-inside text-red-700 dark:text-red-400 text-sm space-y-1">
+            <% @task.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <!-- Title Field -->
+      <div>
+        <%= f.label :title, "Task Title", class: "block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2" %>
+        <%= f.text_field :title,
+            class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition",
+            placeholder: "E.g., Build a social media scheduler app",
+            autofocus: true %>
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          Give a clear, concise title that describes the challenge
+        </p>
+      </div>
+
+      <!-- Description Field -->
+      <div>
+        <%= f.label :description, "Task Description", class: "block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2" %>
+        <%= f.text_area :description,
+            rows: 8,
+            class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition resize-y",
+            placeholder: "Describe the task in detail. What needs to be built? What are the requirements? What problem does it solve?" %>
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          Provide enough detail so others understand the challenge and requirements
+        </p>
+      </div>
+
+      <!-- Status Field -->
+      <div>
+        <%= f.label :status, "Initial Status", class: "block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2" %>
+        <%= f.select :status,
+            [["Open", "open"], ["In Progress", "in_progress"], ["Completed", "completed"]],
+            { selected: "open" },
+            class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" %>
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          Most tasks start as "Open" - available for anyone to work on
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <%= f.submit "Create Task",
+            class: "px-6 py-3 bg-emerald-500 text-black font-bold text-sm uppercase tracking-wider hover:bg-emerald-400 transition rounded-lg cursor-pointer" %>
+        <%= link_to "Cancel", tasks_path,
+            class: "px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-sm uppercase tracking-wider hover:bg-gray-300 dark:hover:bg-gray-600 transition rounded-lg" %>
+      </div>
+
+    <% end %>
+  </div>
+
+  <!-- Helper Tips -->
+  <div class="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+    <h3 class="text-blue-900 dark:text-blue-300 font-bold text-sm uppercase tracking-wide mb-3 flex items-center gap-2">
+      <span>💡</span>
+      Tips for Creating Great Tasks
+    </h3>
+    <ul class="space-y-2 text-blue-800 dark:text-blue-400 text-sm">
+      <li class="flex items-start gap-2">
+        <span class="flex-shrink-0">•</span>
+        <span><strong>Be specific:</strong> Clearly define what needs to be accomplished</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="flex-shrink-0">•</span>
+        <span><strong>Provide context:</strong> Explain why this task matters and who it benefits</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="flex-shrink-0">•</span>
+        <span><strong>List requirements:</strong> Include technical requirements, constraints, or preferences</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="flex-shrink-0">•</span>
+        <span><strong>Real-world value:</strong> Focus on challenges that solve actual problems</span>
+      </li>
+    </ul>
+  </div>
+</div>

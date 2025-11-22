@@ -37,7 +37,25 @@
             <span class="dark:hidden">🌙</span>
             <span class="hidden dark:inline">☀️</span>
           </button>
-          <a href="/users/sign_up" class="px-4 py-2 bg-emerald-500 text-black font-bold text-xs uppercase tracking-wider hover:bg-emerald-400 transition rounded">Join</a>
+          
+          <% if user_signed_in? %>
+            <div class="relative" id="userMenu">
+              <button id="userMenuButton" class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white font-medium text-sm transition">
+                <span class="text-emerald-400">👤</span>
+                <span><%= current_user.email.split('@').first %></span>
+                <span class="text-xs">▼</span>
+              </button>
+              <div id="userMenuDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                <div class="py-1">
+                  <%= link_to "Profile", edit_user_registration_path, class: "block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" %>
+                  <%= button_to "Log Out", destroy_user_session_path, method: :delete, class: "w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700", form: { data: { turbo: false } } %>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <a href="/users/sign_in" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Log In</a>
+            <a href="/users/sign_up" class="px-4 py-2 bg-emerald-500 text-black font-bold text-xs uppercase tracking-wider hover:bg-emerald-400 transition rounded">Join</a>
+          <% end %>
         </div>
       </nav>
     </header>
@@ -46,6 +64,22 @@
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('darkMode', isDark);
       });
+
+      const userMenuButton = document.getElementById('userMenuButton');
+      const userMenuDropdown = document.getElementById('userMenuDropdown');
+      
+      if (userMenuButton && userMenuDropdown) {
+        userMenuButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          userMenuDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function(e) {
+          if (!document.getElementById('userMenu').contains(e.target)) {
+            userMenuDropdown.classList.add('hidden');
+          }
+        });
+      }
     </script>
     <main class="container mx-auto mt-8 px-5 flex">
       <p class="notice"><%= notice %></p>
