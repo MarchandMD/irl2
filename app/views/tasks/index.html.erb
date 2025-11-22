@@ -54,8 +54,18 @@
     </div>
   </div>
 
+  <!-- View Toggle -->
+  <div class="mb-6 flex items-center gap-4">
+    <button id="defaultViewBtn" class="px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white font-medium text-sm uppercase tracking-wider rounded transition">
+      Default
+    </button>
+    <button id="collapsedViewBtn" class="px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition">
+      Collapsed
+    </button>
+  </div>
+
   <!-- Task Grid -->
-  <div class="space-y-4">
+  <div id="taskGrid" class="space-y-4">
     <% if @tasks.any? %>
       <% @tasks.each_with_index do |task, index| %>
         <%
@@ -82,44 +92,74 @@
           end
         %>
 
-        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition group">
-          <div class="flex items-start gap-6">
-            <!-- Task Number / ID -->
-            <div class="flex-shrink-0 w-16 h-16 bg-<%= color[:bg] %>-100 dark:bg-<%= color[:bg] %>-900/30 text-<%= color[:bg] %>-700 dark:text-<%= color[:bg] %>-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
-              #<%= task.id %>
-            </div>
-
-            <!-- Task Content -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between gap-4 mb-2">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
-                  <%= task.title %>
-                </h3>
-                <span class="flex-shrink-0 px-3 py-1 bg-<%= status_config[:color] %>-100 dark:bg-<%= status_config[:color] %>-900/30 text-<%= status_config[:color] %>-800 dark:text-<%= status_config[:color] %>-400 text-xs font-bold uppercase rounded-full">
-                  <%= status_config[:text] %>
-                </span>
+        <div class="task-card bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-lg transition group" data-task-id="<%= task.id %>">
+          <!-- Default View (Full Card) -->
+          <div class="task-card-default p-6">
+            <div class="flex items-start gap-6">
+              <!-- Task Number / ID -->
+              <div class="flex-shrink-0 w-16 h-16 bg-<%= color[:bg] %>-100 dark:bg-<%= color[:bg] %>-900/30 text-<%= color[:bg] %>-700 dark:text-<%= color[:bg] %>-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
+                #<%= task.id %>
               </div>
 
-              <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-                <%= task.description %>
-              </p>
-
-              <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-                <div class="flex items-center gap-1">
-                  <span class="font-mono">👤</span>
-                  <span>Created by <strong class="text-gray-700 dark:text-gray-300"><%= task.user.email.split('@').first %></strong></span>
+              <!-- Task Content -->
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-4 mb-2">
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
+                    <%= task.title %>
+                  </h3>
+                  <span class="flex-shrink-0 px-3 py-1 bg-<%= status_config[:color] %>-100 dark:bg-<%= status_config[:color] %>-900/30 text-<%= status_config[:color] %>-800 dark:text-<%= status_config[:color] %>-400 text-xs font-bold uppercase rounded-full">
+                    <%= status_config[:text] %>
+                  </span>
                 </div>
+
+                <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+                  <%= task.description %>
+                </p>
+
+                <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+                  <div class="flex items-center gap-1">
+                    <span class="font-mono">👤</span>
+                    <span>Created by <strong class="text-gray-700 dark:text-gray-300"><%= task.user.email.split('@').first %></strong></span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span>⬆️</span>
+                    <span class="font-semibold"><%= task.upvotes_count %></span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span>💬</span>
+                    <span class="font-semibold"><%= task.submissions_count %> submissions</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span>⏱️</span>
+                    <span><%= time_ago_in_words(task.created_at) %> ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collapsed View (Minimal Card) -->
+          <div class="task-card-collapsed hidden p-4">
+            <div class="flex items-center gap-4">
+              <!-- Task Number -->
+              <div class="flex-shrink-0 w-12 h-12 bg-<%= color[:bg] %>-100 dark:bg-<%= color[:bg] %>-900/30 text-<%= color[:bg] %>-700 dark:text-<%= color[:bg] %>-400 rounded-lg flex items-center justify-center font-mono text-sm font-bold">
+                #<%= task.id %>
+              </div>
+
+              <!-- Title -->
+              <h3 class="flex-1 text-lg font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer truncate">
+                <%= task.title %>
+              </h3>
+
+              <!-- Stats -->
+              <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                 <div class="flex items-center gap-1">
                   <span>⬆️</span>
                   <span class="font-semibold"><%= task.upvotes_count %></span>
                 </div>
                 <div class="flex items-center gap-1">
                   <span>💬</span>
-                  <span class="font-semibold"><%= task.submissions_count %> submissions</span>
-                </div>
-                <div class="flex items-center gap-1">
-                  <span>⏱️</span>
-                  <span><%= time_ago_in_words(task.created_at) %> ago</span>
+                  <span class="font-semibold"><%= task.submissions_count %></span>
                 </div>
               </div>
             </div>
@@ -156,4 +196,47 @@
       Next
     </button>
   </div>
+
+  <script>
+    const defaultViewBtn = document.getElementById('defaultViewBtn');
+    const collapsedViewBtn = document.getElementById('collapsedViewBtn');
+    const taskCards = document.querySelectorAll('.task-card');
+
+    function setView(viewType) {
+      taskCards.forEach(card => {
+        const defaultView = card.querySelector('.task-card-default');
+        const collapsedView = card.querySelector('.task-card-collapsed');
+
+        if (viewType === 'default') {
+          defaultView.classList.remove('hidden');
+          collapsedView.classList.add('hidden');
+        } else {
+          defaultView.classList.add('hidden');
+          collapsedView.classList.remove('hidden');
+        }
+      });
+
+      if (viewType === 'default') {
+        defaultViewBtn.classList.remove('bg-gray-200', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+        defaultViewBtn.classList.add('bg-gray-900', 'dark:bg-gray-700', 'text-white');
+        collapsedViewBtn.classList.remove('bg-gray-900', 'dark:bg-gray-700', 'text-white');
+        collapsedViewBtn.classList.add('bg-gray-200', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+      } else {
+        collapsedViewBtn.classList.remove('bg-gray-200', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+        collapsedViewBtn.classList.add('bg-gray-900', 'dark:bg-gray-700', 'text-white');
+        defaultViewBtn.classList.remove('bg-gray-900', 'dark:bg-gray-700', 'text-white');
+        defaultViewBtn.classList.add('bg-gray-200', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+      }
+
+      localStorage.setItem('taskViewMode', viewType);
+    }
+
+    defaultViewBtn.addEventListener('click', () => setView('default'));
+    collapsedViewBtn.addEventListener('click', () => setView('collapsed'));
+
+    const savedView = localStorage.getItem('taskViewMode') || 'default';
+    if (savedView === 'collapsed') {
+      setView('collapsed');
+    }
+  </script>
 </div>
