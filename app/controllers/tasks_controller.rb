@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   def index
-    @tasks = Task.includes(:user).order(created_at: :desc)
+    @tasks = Task.all
 
     # Calculate stats
     @active_tasks_count = Task.where(status: 'open').count
