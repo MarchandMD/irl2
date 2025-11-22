@@ -37,241 +37,105 @@
   <!-- Task Stats -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400">142</div>
+      <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @active_tasks_count %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Active Tasks</div>
     </div>
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-blue-600 dark:text-blue-400">89</div>
+      <div class="text-3xl font-black text-blue-600 dark:text-blue-400"><%= @in_progress_count %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">In Progress</div>
     </div>
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-purple-600 dark:text-purple-400">1,247</div>
+      <div class="text-3xl font-black text-purple-600 dark:text-purple-400"><%= @completed_count %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Completed</div>
     </div>
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-orange-600 dark:text-orange-400">8.4k</div>
+      <div class="text-3xl font-black text-orange-600 dark:text-orange-400"><%= number_to_human(@total_users_count, precision: 1, significant: false, delimiter: ',') %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Total Users</div>
     </div>
   </div>
 
   <!-- Task Grid -->
   <div class="space-y-4">
-    <!-- Task Card 1 -->
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition group">
-      <div class="flex items-start gap-6">
-        <!-- Task Number / ID -->
-        <div class="flex-shrink-0 w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
-          #42
-        </div>
+    <% if @tasks.any? %>
+      <% @tasks.each_with_index do |task, index| %>
+        <%
+          # Cycle through colors for variety
+          colors = [
+            { bg: 'emerald', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' },
+            { bg: 'blue', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' },
+            { bg: 'purple', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' },
+            { bg: 'orange', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' },
+            { bg: 'pink', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' }
+          ]
+          color = colors[index % colors.length]
 
-        <!-- Task Content -->
-        <div class="flex-1 min-w-0">
-          <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
-              The Midnight Coffee Chronicle
-            </h3>
-            <span class="flex-shrink-0 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-bold uppercase rounded-full">
-              Open
-            </span>
+          # Status badge colors and text
+          status_config = case task.status
+            when 'open'
+              { color: 'green', text: 'Open' }
+            when 'in_progress'
+              { color: 'blue', text: 'In Progress' }
+            when 'completed'
+              { color: 'gray', text: 'Completed' }
+            else
+              { color: 'gray', text: task.status.titleize }
+          end
+        %>
+
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition group">
+          <div class="flex items-start gap-6">
+            <!-- Task Number / ID -->
+            <div class="flex-shrink-0 w-16 h-16 bg-<%= color[:bg] %>-100 dark:bg-<%= color[:bg] %>-900/30 text-<%= color[:bg] %>-700 dark:text-<%= color[:bg] %>-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
+              #<%= task.id %>
+            </div>
+
+            <!-- Task Content -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-4 mb-2">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
+                  <%= task.title %>
+                </h3>
+                <span class="flex-shrink-0 px-3 py-1 bg-<%= status_config[:color] %>-100 dark:bg-<%= status_config[:color] %>-900/30 text-<%= status_config[:color] %>-800 dark:text-<%= status_config[:color] %>-400 text-xs font-bold uppercase rounded-full">
+                  <%= status_config[:text] %>
+                </span>
+              </div>
+
+              <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+                <%= task.description %>
+              </p>
+
+              <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+                <div class="flex items-center gap-1">
+                  <span class="font-mono">👤</span>
+                  <span>Created by <strong class="text-gray-700 dark:text-gray-300"><%= task.user.email.split('@').first %></strong></span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span>⬆️</span>
+                  <span class="font-semibold"><%= task.upvotes_count %></span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span>💬</span>
+                  <span class="font-semibold"><%= task.submissions_count %> submissions</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span>⏱️</span>
+                  <span><%= time_ago_in_words(task.created_at) %> ago</span>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-            Visit a 24-hour diner between 3 AM and 4 AM. Order a black coffee. Leave a short poem on a napkin for the next person to find. Document your journey.
-          </p>
-
-          <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-            <div class="flex items-center gap-1">
-              <span class="font-mono">👤</span>
-              <span>Created by <strong class="text-gray-700 dark:text-gray-300">NightOwl</strong></span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⬆️</span>
-              <span class="font-semibold">23</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>💬</span>
-              <span class="font-semibold">8 submissions</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⏱️</span>
-              <span>2 days ago</span>
-            </div>
-          </div>
         </div>
+      <% end %>
+    <% else %>
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-12 text-center">
+        <div class="text-6xl mb-4">📋</div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">No tasks yet</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">Be the first to create a challenge for the community!</p>
+        <button class="px-6 py-3 bg-emerald-500 text-black font-bold text-sm uppercase tracking-wider hover:bg-emerald-400 transition rounded">
+          + Create First Task
+        </button>
       </div>
-    </div>
-
-    <!-- Task Card 2 -->
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition group">
-      <div class="flex items-start gap-6">
-        <div class="flex-shrink-0 w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
-          #41
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
-              Urban Archaeology Expedition
-            </h3>
-            <span class="flex-shrink-0 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 text-xs font-bold uppercase rounded-full">
-              In Progress
-            </span>
-          </div>
-
-          <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-            Find the oldest physical object you can in your neighborhood. Research its history. Create a mini-documentary (photo series or video) about your discovery.
-          </p>
-
-          <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-            <div class="flex items-center gap-1">
-              <span class="font-mono">👤</span>
-              <span>Created by <strong class="text-gray-700 dark:text-gray-300">ArchiveSeeker</strong></span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⬆️</span>
-              <span class="font-semibold">47</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>💬</span>
-              <span class="font-semibold">15 submissions</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⏱️</span>
-              <span>5 days ago</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Task Card 3 -->
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition group">
-      <div class="flex items-start gap-6">
-        <div class="flex-shrink-0 w-16 h-16 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
-          #40
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
-              Secret Door Detective
-            </h3>
-            <span class="flex-shrink-0 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-bold uppercase rounded-full">
-              Open
-            </span>
-          </div>
-
-          <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-            Find a door in your city that most people walk past without noticing. Document what makes it special. Bonus: discover what's behind it (legally!).
-          </p>
-
-          <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-            <div class="flex items-center gap-1">
-              <span class="font-mono">👤</span>
-              <span>Created by <strong class="text-gray-700 dark:text-gray-300">HiddenSpaces</strong></span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⬆️</span>
-              <span class="font-semibold">31</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>💬</span>
-              <span class="font-semibold">12 submissions</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⏱️</span>
-              <span>1 week ago</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Task Card 4 -->
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition group">
-      <div class="flex items-start gap-6">
-        <div class="flex-shrink-0 w-16 h-16 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
-          #39
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
-              Stranger Tea Party Protocol
-            </h3>
-            <span class="flex-shrink-0 px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase rounded-full">
-              Completed
-            </span>
-          </div>
-
-          <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-            Set up a small tea station in a public park. Invite strangers to join you for tea. Collect their stories. Share what you learned about human connection.
-          </p>
-
-          <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-            <div class="flex items-center gap-1">
-              <span class="font-mono">👤</span>
-              <span>Created by <strong class="text-gray-700 dark:text-gray-300">TeaTime</strong></span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⬆️</span>
-              <span class="font-semibold">89</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>💬</span>
-              <span class="font-semibold">34 submissions</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⏱️</span>
-              <span>2 weeks ago</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Task Card 5 -->
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition group">
-      <div class="flex items-start gap-6">
-        <div class="flex-shrink-0 w-16 h-16 bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
-          #38
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
-              The 100 Block Journey
-            </h3>
-            <span class="flex-shrink-0 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-bold uppercase rounded-full">
-              Open
-            </span>
-          </div>
-
-          <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-            Walk 100 city blocks in a single day without using any transportation. Document interesting sights, conversations, and discoveries along the way.
-          </p>
-
-          <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-            <div class="flex items-center gap-1">
-              <span class="font-mono">👤</span>
-              <span>Created by <strong class="text-gray-700 dark:text-gray-300">UrbanHiker</strong></span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⬆️</span>
-              <span class="font-semibold">56</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>💬</span>
-              <span class="font-semibold">19 submissions</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>⏱️</span>
-              <span>3 weeks ago</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <% end %>
   </div>
 
   <!-- Pagination -->
