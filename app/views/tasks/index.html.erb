@@ -64,6 +64,28 @@
     </button>
   </div>
 
+  <!-- Group Filters -->
+  <div class="mb-6 flex items-center gap-4 flex-wrap">
+    <%= link_to tasks_path, class: "px-4 py-2 #{'bg-gray-900 dark:bg-gray-700 text-white' if params[:group].blank?} #{'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700' if params[:group].present?} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+      All Groups
+    <% end %>
+    <%= link_to tasks_path(group: 'Urban Nomads'), class: "px-4 py-2 #{'bg-emerald-600 dark:bg-emerald-700 text-white' if params[:group] == 'Urban Nomads'} #{'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/50' if params[:group] != 'Urban Nomads'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+      Urban Nomads
+    <% end %>
+    <%= link_to tasks_path(group: 'Digital Alchemists'), class: "px-4 py-2 #{'bg-purple-600 dark:bg-purple-700 text-white' if params[:group] == 'Digital Alchemists'} #{'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/50' if params[:group] != 'Digital Alchemists'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+      Digital Alchemists
+    <% end %>
+    <%= link_to tasks_path(group: 'Street Philosophers'), class: "px-4 py-2 #{'bg-blue-600 dark:bg-blue-700 text-white' if params[:group] == 'Street Philosophers'} #{'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50' if params[:group] != 'Street Philosophers'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+      Street Philosophers
+    <% end %>
+    <%= link_to tasks_path(group: 'Midnight Architects'), class: "px-4 py-2 #{'bg-indigo-600 dark:bg-indigo-700 text-white' if params[:group] == 'Midnight Architects'} #{'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-900/50' if params[:group] != 'Midnight Architects'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+      Midnight Architects
+    <% end %>
+    <%= link_to tasks_path(group: 'Concrete Poets'), class: "px-4 py-2 #{'bg-orange-600 dark:bg-orange-700 text-white' if params[:group] == 'Concrete Poets'} #{'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-900/50' if params[:group] != 'Concrete Poets'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+      Concrete Poets
+    <% end %>
+  </div>
+
   <!-- Task Grid -->
   <div id="taskGrid" class="space-y-4">
     <% if @tasks.any? %>
@@ -79,16 +101,18 @@
           ]
           color = colors[index % colors.length]
 
-          # Status badge colors and text
-          status_config = case task.status
-            when 'open'
-              { color: 'green', text: 'Open' }
-            when 'in_progress'
-              { color: 'blue', text: 'In Progress' }
-            when 'completed'
-              { color: 'gray', text: 'Completed' }
-            else
-              { color: 'gray', text: task.status.titleize }
+          # Group badge colors and text
+          group_colors = {
+            'Urban Nomads' => { color: 'emerald', text: 'Urban Nomads' },
+            'Digital Alchemists' => { color: 'purple', text: 'Digital Alchemists' },
+            'Street Philosophers' => { color: 'blue', text: 'Street Philosophers' },
+            'Midnight Architects' => { color: 'indigo', text: 'Midnight Architects' },
+            'Concrete Poets' => { color: 'orange', text: 'Concrete Poets' }
+          }
+          group_config = if task.user.group.present?
+            group_colors[task.user.group] || { color: 'gray', text: task.user.group }
+          else
+            { color: 'gray', text: 'No Group' }
           end
         %>
 
@@ -109,8 +133,8 @@
                       <%= task.title %>
                     </h3>
                   <% end %>
-                  <span class="flex-shrink-0 px-3 py-1 bg-<%= status_config[:color] %>-100 dark:bg-<%= status_config[:color] %>-900/30 text-<%= status_config[:color] %>-800 dark:text-<%= status_config[:color] %>-400 text-xs font-bold uppercase rounded-full">
-                    <%= status_config[:text] %>
+                  <span class="flex-shrink-0 px-3 py-1 bg-<%= group_config[:color] %>-100 dark:bg-<%= group_config[:color] %>-900/30 text-<%= group_config[:color] %>-800 dark:text-<%= group_config[:color] %>-400 text-xs font-bold uppercase rounded-full">
+                    <%= group_config[:text] %>
                   </span>
                 </div>
 

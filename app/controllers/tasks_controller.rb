@@ -2,7 +2,12 @@ class TasksController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
 
   def index
-    @tasks = Task.all
+    @tasks = Task.includes(:user).all
+
+    # Filter by group if group parameter is present
+    if params[:group].present?
+      @tasks = @tasks.joins(:user).where(users: { group: params[:group] })
+    end
 
     # Calculate stats
     @active_tasks_count = Task.where(status: "open").count
