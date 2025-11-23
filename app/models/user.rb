@@ -5,4 +5,6 @@ class User < ApplicationRecord
     :recoverable, :rememberable, :validatable
 
   has_many :tasks
+  has_many :upvotes, dependent: :destroy
+  has_many :upvoted_tasks, through: :upvotes, source: :task
 end

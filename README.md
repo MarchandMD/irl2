@@ -75,7 +75,7 @@ docker run -p 3000:3000 irl2
 - **Database console**: `rails dbconsole`
 - **Routes**: `rails routes`
 - **Security checks**: `bin/brakeman`
-- **Code linting**: `bin/rubocop`
+- **Code linting**: `bin/lint` (or `bin/rubocop`)
 
 ## Configuration
 
@@ -133,7 +133,7 @@ Contributions are welcome and appreciated! Here's how to get started:
 1. Make your changes in your feature branch
 2. Write or update tests as needed
 3. Ensure all tests pass: `bundle exec rspec`
-4. Run the linter: `bin/rubocop`
+4. Run the linter: `bin/lint`
 5. Commit your changes with clear, descriptive commit messages:
    ```bash
    git commit -m "Add feature: description of your changes"
@@ -151,10 +151,26 @@ Contributions are welcome and appreciated! Here's how to get started:
 
 ### Code Standards
 
-- Follow Ruby style guidelines (enforced by RuboCop)
+- Follow Ruby style guidelines (enforced by Standard)
 - Write meaningful test coverage for new features
 - Keep commits atomic and well-documented
 - Update documentation for any user-facing changes
+
+### Linting
+
+The project uses Standard for Ruby linting. Run the linter with:
+
+```bash
+bin/lint
+```
+
+For compatibility, `bin/rubocop` is also available and redirects to `bin/lint`.
+
+To auto-fix issues:
+
+```bash
+bin/lint --fix
+```
 
 ### Reporting Issues
 

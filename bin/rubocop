@@ -2,7 +2,5 @@
 require "rubygems"
 require "bundler/setup"
 
-# explicit rubocop config increases performance slightly while avoiding config confusion.
-ARGV.unshift("--config", File.expand_path("../.rubocop.yml", __dir__))
-
-load Gem.bin_path("rubocop", "rubocop")
+# Redirect to bin/lint for consistency
+exec File.expand_path("lint", __dir__), *ARGV

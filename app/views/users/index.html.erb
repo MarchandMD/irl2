@@ -2,37 +2,37 @@
   <!-- Header Section -->
   <div class="mb-8">
     <h1 class="text-4xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-2">Community</h1>
-    <p class="text-gray-600 dark:text-gray-400 text-lg">Meet the explorers, creators, and adventurers</p>
+    <p class="text-gray-700 dark:text-gray-300 text-lg">Meet the explorers, creators, and adventurers</p>
   </div>
 
   <!-- Stats & Filter Bar -->
   <div class="mb-8 grid md:grid-cols-4 gap-4">
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @users.count %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Total Members</div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
+      <div class="text-3xl font-black text-emerald-700 dark:text-emerald-300"><%= @users.count %></div>
+      <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Total Members</div>
     </div>
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-blue-600 dark:text-blue-400"><%= @groups.count %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Active Groups</div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
+      <div class="text-3xl font-black text-blue-700 dark:text-blue-300"><%= @groups.count %></div>
+      <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Active Groups</div>
     </div>
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-purple-600 dark:text-purple-400"><%= Task.count %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Tasks Created</div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
+      <div class="text-3xl font-black text-purple-700 dark:text-purple-300"><%= Task.count %></div>
+      <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Tasks Created</div>
     </div>
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-orange-600 dark:text-orange-400"><%= Task.where(status: 'completed').count %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Completed</div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
+      <div class="text-3xl font-black text-orange-700 dark:text-orange-300"><%= Task.where(status: 'completed').count %></div>
+      <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Completed</div>
     </div>
   </div>
 
   <!-- Group Filter Pills -->
   <div class="mb-6 flex flex-wrap items-center gap-3">
-    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Groups:</span>
-    <%= link_to users_path, class: "group-filter-btn #{params[:group].blank? ? 'active bg-gray-900 dark:bg-gray-700 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'} px-4 py-2 text-sm font-medium rounded-full transition" do %>
+    <span class="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wide">Groups:</span>
+    <%= link_to users_path, class: "group-filter-btn #{params[:group].blank? ? 'active bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-bold' : 'bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold'} px-4 py-2 text-sm rounded-full transition" do %>
       All
     <% end %>
     <% @groups.each do |group| %>
-      <%= link_to users_path(group: group), class: "group-filter-btn #{params[:group] == group ? 'active bg-gray-900 dark:bg-gray-700 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'} px-4 py-2 text-sm font-medium rounded-full transition" do %>
+      <%= link_to users_path(group: group), class: "group-filter-btn #{params[:group] == group ? 'active bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-bold' : 'bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold'} px-4 py-2 text-sm rounded-full transition" do %>
         <%= group %>
       <% end %>
     <% end %>
@@ -48,13 +48,13 @@
 
         # Group badge colors
         group_colors = {
-          'Urban Nomads' => { bg: 'emerald', text: 'emerald' },
-          'Digital Alchemists' => { bg: 'purple', text: 'purple' },
-          'Street Philosophers' => { bg: 'blue', text: 'blue' },
-          'Midnight Architects' => { bg: 'indigo', text: 'indigo' },
-          'Concrete Poets' => { bg: 'orange', text: 'orange' }
+          'Urban Nomads' => { bg: 'emerald', text: 'emerald', avatar_light: 'emerald-500', avatar_dark: 'emerald-500' },
+          'Digital Alchemists' => { bg: 'purple', text: 'purple', avatar_light: 'purple-500', avatar_dark: 'purple-500' },
+          'Street Philosophers' => { bg: 'blue', text: 'blue', avatar_light: 'blue-500', avatar_dark: 'blue-500' },
+          'Midnight Architects' => { bg: 'indigo', text: 'indigo', avatar_light: 'gray-900', avatar_dark: 'indigo-700' },
+          'Concrete Poets' => { bg: 'orange', text: 'orange', avatar_light: 'orange-500', avatar_dark: 'orange-500' }
         }
-        group_color = group_colors[user.group] || { bg: 'gray', text: 'gray' }
+        group_color = group_colors[user.group] || { bg: 'gray', text: 'gray', avatar_light: 'gray-500', avatar_dark: 'gray-500' }
       %>
 
       <%
@@ -74,7 +74,7 @@
         <div class="flex items-center justify-between mb-4">
           <div class="text-3xl"><%= info[:icon] %></div>
           <% if user.group.present? %>
-            <span class="px-3 py-1 bg-<%= group_color[:bg] %>-100 dark:bg-<%= group_color[:bg] %>-900/30 text-<%= group_color[:text] %>-700 dark:text-<%= group_color[:text] %>-400 text-xs font-bold uppercase rounded-full">
+            <span class="px-3 py-1 bg-<%= group_color[:bg] %>-100 dark:bg-<%= group_color[:bg] %>-900/50 text-<%= group_color[:text] %>-800 dark:text-<%= group_color[:text] %>-200 text-xs font-bold uppercase rounded-full border border-<%= group_color[:bg] %>-300 dark:border-<%= group_color[:bg] %>-700">
               <%= user.group %>
             </span>
           <% end %>
@@ -82,39 +82,39 @@
 
         <!-- Avatar & Name -->
         <div class="flex items-start gap-4 mb-3">
-          <div class="flex-shrink-0 w-16 h-16 bg-<%= group_color[:bg] %>-500 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+          <div class="flex-shrink-0 w-16 h-16 bg-<%= group_color[:avatar_light] %> dark:bg-<%= group_color[:avatar_dark] %> rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-2 ring-<%= group_color[:bg] %>-300 dark:ring-<%= group_color[:bg] %>-600">
             <%= user.email[0].upcase %>
           </div>
           <div class="flex-1 min-w-0">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white truncate">
               <%= user.email.split('@').first %>
             </h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 italic mt-1">
+            <p class="text-xs text-gray-600 dark:text-gray-300 italic mt-1">
               <%= info[:tagline] %>
             </p>
           </div>
         </div>
 
         <!-- Stats -->
-        <div class="grid grid-cols-3 gap-3 mb-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div class="grid grid-cols-3 gap-3 mb-4 pt-4 border-t-2 border-gray-300 dark:border-gray-600">
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.count %></div>
-            <div class="text-xs text-gray-500 dark:text-gray-400 uppercase">Tasks</div>
+            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks</div>
           </div>
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:upvotes_count) %></div>
-            <div class="text-xs text-gray-500 dark:text-gray-400 uppercase">Upvotes</div>
+            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Upvotes</div>
           </div>
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:submissions_count) %></div>
-            <div class="text-xs text-gray-500 dark:text-gray-400 uppercase">Submissions</div>
+            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Submissions</div>
           </div>
         </div>
 
         <!-- Member Since -->
-        <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-          <span>Joined <%= time_ago_in_words(user.created_at) %> ago</span>
-          <%= link_to user_path(user), class: "text-emerald-600 dark:text-emerald-400 hover:underline font-medium" do %>
+        <div class="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
+          <span class="font-medium">Joined <%= time_ago_in_words(user.created_at) %> ago</span>
+          <%= link_to user_path(user), class: "text-emerald-700 dark:text-emerald-300 hover:underline font-semibold" do %>
             View Profile →
           <% end %>
         </div>
@@ -124,13 +124,13 @@
 
   <!-- Pagination -->
   <div class="mt-8 flex items-center justify-center gap-2">
-    <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50" disabled>
+    <button class="px-4 py-2 border-2 border-gray-400 dark:border-gray-600 rounded text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition disabled:opacity-50 font-semibold" disabled>
       Previous
     </button>
-    <button class="px-4 py-2 bg-emerald-500 text-black font-bold rounded">
+    <button class="px-4 py-2 bg-emerald-600 text-white font-bold rounded shadow-md hover:bg-emerald-700 transition">
       1
     </button>
-    <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+    <button class="px-4 py-2 border-2 border-gray-400 dark:border-gray-600 rounded text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition font-semibold">
       Next
     </button>
   </div>

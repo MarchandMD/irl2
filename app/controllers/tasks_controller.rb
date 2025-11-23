@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
-  before_action :authenticate_user!, only: [ :new, :create ]
+  before_action :authenticate_user!, only: [:new, :create, :upvote, :remove_upvote]
+  before_action :set_task, only: [:show, :upvote, :remove_upvote]
 
   def index
     @tasks = Task.includes(:user).all
@@ -11,7 +12,7 @@ class TasksController < ApplicationController
 
     # Filter by group if group parameter is present
     if params[:group].present?
-      @tasks = @tasks.joins(:user).where(users: { group: params[:group] })
+      @tasks = @tasks.joins(:user).where(users: {group: params[:group]})
     end
 
     # Filter by status
@@ -42,7 +43,19 @@ class TasksController < ApplicationController
   end
 
   def show
-    @task = Task.find(params[:id])
+  end
+
+  def upvote
+    unless @task.upvoted_by?(current_user)
+      @task.upvotes.create(user: current_user)
+    end
+    redirect_to @task
+  end
+
+  def remove_upvote
+    upvote = @task.upvotes.find_by(user: current_user)
+    upvote&.destroy
+    redirect_to @task
   end
 
   def new
@@ -63,6 +76,10 @@ class TasksController < ApplicationController
   end
 
   private
+
+  def set_task
+    @task = Task.find(params[:id])
+  end
 
   def task_params
     params.require(:task).permit(:title, :description, :status, :recommended_group)

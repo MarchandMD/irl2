@@ -46,9 +46,21 @@
 
     <!-- Action Buttons -->
     <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
-      <button class="px-6 py-2 bg-emerald-500 text-black font-bold text-sm uppercase tracking-wider hover:bg-emerald-400 transition rounded">
-        ⬆️ Upvote (<%= @task.upvotes_count %>)
-      </button>
+      <% if user_signed_in? %>
+        <% if @task.upvoted_by?(current_user) %>
+          <%= button_to remove_upvote_task_path(@task), method: :delete, class: "px-6 py-2 bg-emerald-600 text-white font-bold text-sm uppercase tracking-wider hover:bg-emerald-500 transition rounded" do %>
+            ✓ Upvoted (<%= @task.upvotes_count %>)
+          <% end %>
+        <% else %>
+          <%= button_to upvote_task_path(@task), method: :post, class: "px-6 py-2 bg-emerald-500 text-black font-bold text-sm uppercase tracking-wider hover:bg-emerald-400 transition rounded" do %>
+            ⬆️ Upvote (<%= @task.upvotes_count %>)
+          <% end %>
+        <% end %>
+      <% else %>
+        <%= link_to new_user_session_path, class: "px-6 py-2 bg-emerald-500 text-black font-bold text-sm uppercase tracking-wider hover:bg-emerald-400 transition rounded" do %>
+          ⬆️ Upvote (<%= @task.upvotes_count %>)
+        <% end %>
+      <% end %>
       <button class="px-6 py-2 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded">
         Submit Solution
       </button>
