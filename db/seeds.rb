@@ -22,7 +22,7 @@ end
 # Create 100 tasks
 puts "Creating tasks..."
 users = User.all
-statuses = ["open", "in_progress", "completed", "closed"]
+statuses = [ "open", "in_progress", "completed", "closed" ]
 
 100.times do
   Task.create!(

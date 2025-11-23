@@ -32,12 +32,13 @@
           <a href="/" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Home</a>
           <a href="/users" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Users</a>
           <a href="/tasks" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Tasks</a>
+          <a href="/groups" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Groups</a>
           <a href="/about" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">About</a>
           <button id="darkModeToggle" class="px-3 py-2 text-gray-300 hover:text-white transition text-xl" aria-label="Toggle dark mode">
             <span class="dark:hidden">🌙</span>
             <span class="hidden dark:inline">☀️</span>
           </button>
-          
+
           <% if user_signed_in? %>
             <div class="relative" id="userMenu">
               <button id="userMenuButton" class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white font-medium text-sm transition">
@@ -60,26 +61,46 @@
       </nav>
     </header>
     <script>
-      document.getElementById('darkModeToggle').addEventListener('click', function() {
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('darkMode', isDark);
-      });
+      function initializeHeaderControls() {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        if (darkModeToggle) {
+          // Remove existing listener by cloning the element
+          const newToggle = darkModeToggle.cloneNode(true);
+          darkModeToggle.parentNode.replaceChild(newToggle, darkModeToggle);
 
-      const userMenuButton = document.getElementById('userMenuButton');
-      const userMenuDropdown = document.getElementById('userMenuDropdown');
-      
-      if (userMenuButton && userMenuDropdown) {
-        userMenuButton.addEventListener('click', function(e) {
-          e.stopPropagation();
-          userMenuDropdown.classList.toggle('hidden');
-        });
+          newToggle.addEventListener('click', function() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', isDark);
+          });
+        }
 
-        document.addEventListener('click', function(e) {
-          if (!document.getElementById('userMenu').contains(e.target)) {
-            userMenuDropdown.classList.add('hidden');
-          }
-        });
+        const userMenuButton = document.getElementById('userMenuButton');
+        const userMenuDropdown = document.getElementById('userMenuDropdown');
+
+        if (userMenuButton && userMenuDropdown) {
+          // Remove existing listener by cloning the element
+          const newButton = userMenuButton.cloneNode(true);
+          userMenuButton.parentNode.replaceChild(newButton, userMenuButton);
+
+          newButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('userMenuDropdown').classList.toggle('hidden');
+          });
+
+          document.addEventListener('click', function(e) {
+            const userMenu = document.getElementById('userMenu');
+            if (userMenu && !userMenu.contains(e.target)) {
+              document.getElementById('userMenuDropdown').classList.add('hidden');
+            }
+          });
+        }
       }
+
+      // Initialize on initial page load
+      initializeHeaderControls();
+
+      // Re-initialize after Turbo Drive navigation
+      document.addEventListener('turbo:load', initializeHeaderControls);
     </script>
     <main class="container mx-auto mt-8 px-5 flex">
       <p class="notice"><%= notice %></p>
