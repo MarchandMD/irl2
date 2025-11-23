@@ -12,7 +12,7 @@ class Task < ApplicationRecord
   validates :title, presence: true
   validates :description, presence: true
   validates :status, presence: true
-  validates :recommended_group, inclusion: {in: GROUPS, allow_nil: true}
+  validates :recommended_group, inclusion: { in: GROUPS, allow_nil: true }
 
   # Search scope
   scope :search, ->(query) {

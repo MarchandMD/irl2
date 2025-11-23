@@ -67,4 +67,4 @@ gem "devise", "~> 4.9"
 
 gem "faker", "~> 3.5"
 
-gem "factory_bot_rails", "~> 6.5", groups: [:development, :test]
+gem "factory_bot_rails", "~> 6.5", groups: [ :development, :test ]

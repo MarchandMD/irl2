@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, only: [ :new, :create ]
 
   def index
     @tasks = Task.includes(:user).all
@@ -11,19 +11,19 @@ class TasksController < ApplicationController
 
     # Filter by group if group parameter is present
     if params[:group].present?
-      @tasks = @tasks.joins(:user).where(users: {group: params[:group]})
+      @tasks = @tasks.joins(:user).where(users: { group: params[:group] })
     end
 
     # Filter by status
-    if params[:status].present? && params[:status] != 'all'
+    if params[:status].present? && params[:status] != "all"
       @tasks = @tasks.where(status: params[:status])
     end
 
     # Sort tasks
     @tasks = case params[:sort]
-    when 'popular'
+    when "popular"
       @tasks.order(upvotes_count: :desc, created_at: :desc)
-    when 'active'
+    when "active"
       @tasks.order(submissions_count: :desc, created_at: :desc)
     else # 'newest' or nil
       @tasks.order(created_at: :desc)
