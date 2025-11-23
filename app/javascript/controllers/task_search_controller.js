@@ -55,16 +55,18 @@ export default class extends Controller {
       params.delete("q")
     }
 
-    // Preserve existing filters
+    // Preserve existing filters (like group)
     url.search = params.toString()
 
     // Update the URL without a full page reload
     const newUrl = `${url.pathname}${url.search}`
     history.replaceState({}, "", newUrl)
 
-    // Turbo will handle the frame update automatically via src attribute
-    if (this.hasResultsTarget) {
-      this.resultsTarget.src = newUrl
+    // Find the turbo frame and update it
+    const tasksFrame = document.getElementById('tasks_list')
+    if (tasksFrame) {
+      tasksFrame.src = newUrl
+      tasksFrame.reload()
     }
   }
 

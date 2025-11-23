@@ -10,7 +10,7 @@
     <div class="relative">
       <input
         type="text"
-        placeholder="Search tasks by title or description..."
+        placeholder="Search tasks by title, description, or creator..."
         value="<%= params[:q] %>"
         data-task-search-target="input"
         data-action="input->task-search#search keydown->task-search#handleKeydown"
@@ -78,6 +78,26 @@
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Total Users</div>
     </div>
   </div>
+
+  <!-- Search Results Indicator -->
+  <% if params[:q].present? %>
+    <div class="mb-6 flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🔍</span>
+        <div>
+          <p class="text-sm font-semibold text-gray-900 dark:text-white">
+            Showing search results for: <span class="text-emerald-600 dark:text-emerald-400">"<%= params[:q] %>"</span>
+          </p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">
+            <%= @tasks.count %> <%= 'task'.pluralize(@tasks.count) %> found
+          </p>
+        </div>
+      </div>
+      <%= link_to tasks_path(group: params[:group]), class: "px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium text-sm uppercase tracking-wide rounded transition" do %>
+        Clear Search
+      <% end %>
+    </div>
+  <% end %>
 
   <!-- Group Filters -->
   <div class="mb-6 flex items-center gap-4 flex-wrap">

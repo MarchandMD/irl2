@@ -18,6 +18,11 @@ class Task < ApplicationRecord
   scope :search, ->(query) {
     return all if query.blank?
 
-    where("title ILIKE ? OR description ILIKE ?", "%#{sanitize_sql_like(query)}%", "%#{sanitize_sql_like(query)}%")
+    joins(:user).where(
+      "tasks.title ILIKE ? OR tasks.description ILIKE ? OR users.email ILIKE ?",
+      "%#{sanitize_sql_like(query)}%",
+      "%#{sanitize_sql_like(query)}%",
+      "%#{sanitize_sql_like(query)}%"
+    )
   }
 end

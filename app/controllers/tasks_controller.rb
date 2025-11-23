@@ -19,6 +19,11 @@ class TasksController < ApplicationController
     @in_progress_count = Task.where(status: "in_progress").count
     @completed_count = Task.where(status: "completed").count
     @total_users_count = User.count
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream { render partial: "tasks_list" }
+    end
   end
 
   def show
