@@ -1,12 +1,17 @@
 class TasksController < ApplicationController
-  before_action :authenticate_user!, only: [ :new, :create ]
+  before_action :authenticate_user!, only: [:new, :create]
 
   def index
     @tasks = Task.includes(:user).all
 
+    # Search filter
+    if params[:q].present?
+      @tasks = @tasks.search(params[:q])
+    end
+
     # Filter by group if group parameter is present
     if params[:group].present?
-      @tasks = @tasks.joins(:user).where(users: { group: params[:group] })
+      @tasks = @tasks.joins(:user).where(users: {group: params[:group]})
     end
 
     # Calculate stats
@@ -40,6 +45,6 @@ class TasksController < ApplicationController
   private
 
   def task_params
-    params.require(:task).permit(:title, :description, :status)
+    params.require(:task).permit(:title, :description, :status, :recommended_group)
   end
 end

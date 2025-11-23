@@ -5,6 +5,31 @@
     <p class="text-gray-600 dark:text-gray-400 text-lg">Browse and discover real-world challenges</p>
   </div>
 
+  <!-- Search Bar -->
+  <div class="mb-6" data-controller="task-search" data-task-search-url-value="<%= tasks_path %>">
+    <div class="relative">
+      <input
+        type="text"
+        placeholder="Search tasks by title or description..."
+        value="<%= params[:q] %>"
+        data-task-search-target="input"
+        data-action="input->task-search#search keydown->task-search#handleKeydown"
+        class="w-full px-4 py-3 pl-12 pr-12 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-base"
+      />
+      <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none">
+        🔍
+      </div>
+      <button
+        type="button"
+        data-task-search-target="clearButton"
+        data-action="click->task-search#clear"
+        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition <%= 'hidden' unless params[:q].present? %>"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+
   <!-- Filter Bar -->
   <div class="mb-8 flex flex-wrap items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
     <div class="flex items-center gap-2">
@@ -54,227 +79,27 @@
     </div>
   </div>
 
-  <!-- View Toggle -->
-  <div class="mb-6 flex items-center gap-4">
-    <button id="defaultViewBtn" class="px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white font-medium text-sm uppercase tracking-wider rounded transition">
-      Default
-    </button>
-    <button id="collapsedViewBtn" class="px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition">
-      Collapsed
-    </button>
-  </div>
-
   <!-- Group Filters -->
   <div class="mb-6 flex items-center gap-4 flex-wrap">
-    <%= link_to tasks_path, class: "px-4 py-2 #{'bg-gray-900 dark:bg-gray-700 text-white' if params[:group].blank?} #{'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700' if params[:group].present?} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+    <%= link_to tasks_path(q: params[:q]), class: "px-4 py-2 #{'bg-gray-900 dark:bg-gray-700 text-white' if params[:group].blank?} #{'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700' if params[:group].present?} font-medium text-sm uppercase tracking-wider rounded transition", data: { turbo_frame: "tasks_list" } do %>
       All Groups
     <% end %>
-    <%= link_to tasks_path(group: 'Urban Nomads'), class: "px-4 py-2 #{'bg-emerald-600 dark:bg-emerald-700 text-white' if params[:group] == 'Urban Nomads'} #{'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/50' if params[:group] != 'Urban Nomads'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+    <%= link_to tasks_path(group: 'Urban Nomads', q: params[:q]), class: "px-4 py-2 #{'bg-emerald-600 dark:bg-emerald-700 text-white' if params[:group] == 'Urban Nomads'} #{'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/50' if params[:group] != 'Urban Nomads'} font-medium text-sm uppercase tracking-wider rounded transition", data: { turbo_frame: "tasks_list" } do %>
       Urban Nomads
     <% end %>
-    <%= link_to tasks_path(group: 'Digital Alchemists'), class: "px-4 py-2 #{'bg-purple-600 dark:bg-purple-700 text-white' if params[:group] == 'Digital Alchemists'} #{'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/50' if params[:group] != 'Digital Alchemists'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+    <%= link_to tasks_path(group: 'Digital Alchemists', q: params[:q]), class: "px-4 py-2 #{'bg-purple-600 dark:bg-purple-700 text-white' if params[:group] == 'Digital Alchemists'} #{'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/50' if params[:group] != 'Digital Alchemists'} font-medium text-sm uppercase tracking-wider rounded transition", data: { turbo_frame: "tasks_list" } do %>
       Digital Alchemists
     <% end %>
-    <%= link_to tasks_path(group: 'Street Philosophers'), class: "px-4 py-2 #{'bg-blue-600 dark:bg-blue-700 text-white' if params[:group] == 'Street Philosophers'} #{'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50' if params[:group] != 'Street Philosophers'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+    <%= link_to tasks_path(group: 'Street Philosophers', q: params[:q]), class: "px-4 py-2 #{'bg-blue-600 dark:bg-blue-700 text-white' if params[:group] == 'Street Philosophers'} #{'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50' if params[:group] != 'Street Philosophers'} font-medium text-sm uppercase tracking-wider rounded transition", data: { turbo_frame: "tasks_list" } do %>
       Street Philosophers
     <% end %>
-    <%= link_to tasks_path(group: 'Midnight Architects'), class: "px-4 py-2 #{'bg-indigo-600 dark:bg-indigo-700 text-white' if params[:group] == 'Midnight Architects'} #{'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-900/50' if params[:group] != 'Midnight Architects'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+    <%= link_to tasks_path(group: 'Midnight Architects', q: params[:q]), class: "px-4 py-2 #{'bg-indigo-600 dark:bg-indigo-700 text-white' if params[:group] == 'Midnight Architects'} #{'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-900/50' if params[:group] != 'Midnight Architects'} font-medium text-sm uppercase tracking-wider rounded transition", data: { turbo_frame: "tasks_list" } do %>
       Midnight Architects
     <% end %>
-    <%= link_to tasks_path(group: 'Concrete Poets'), class: "px-4 py-2 #{'bg-orange-600 dark:bg-orange-700 text-white' if params[:group] == 'Concrete Poets'} #{'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-900/50' if params[:group] != 'Concrete Poets'} font-medium text-sm uppercase tracking-wider rounded transition" do %>
+    <%= link_to tasks_path(group: 'Concrete Poets', q: params[:q]), class: "px-4 py-2 #{'bg-orange-600 dark:bg-orange-700 text-white' if params[:group] == 'Concrete Poets'} #{'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-900/50' if params[:group] != 'Concrete Poets'} font-medium text-sm uppercase tracking-wider rounded transition", data: { turbo_frame: "tasks_list" } do %>
       Concrete Poets
     <% end %>
   </div>
 
-  <!-- Task Grid -->
-  <div id="taskGrid" class="space-y-4">
-    <% if @tasks.any? %>
-      <% @tasks.each_with_index do |task, index| %>
-        <%
-          # Cycle through colors for variety
-          colors = [
-            { bg: 'emerald', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' },
-            { bg: 'blue', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' },
-            { bg: 'purple', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' },
-            { bg: 'orange', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' },
-            { bg: 'pink', badge_open: 'green', badge_progress: 'blue', badge_completed: 'gray' }
-          ]
-          color = colors[index % colors.length]
-
-          # Group badge colors and text
-          group_colors = {
-            'Urban Nomads' => { color: 'emerald', text: 'Urban Nomads' },
-            'Digital Alchemists' => { color: 'purple', text: 'Digital Alchemists' },
-            'Street Philosophers' => { color: 'blue', text: 'Street Philosophers' },
-            'Midnight Architects' => { color: 'indigo', text: 'Midnight Architects' },
-            'Concrete Poets' => { color: 'orange', text: 'Concrete Poets' }
-          }
-          group_config = if task.user.group.present?
-            group_colors[task.user.group] || { color: 'gray', text: task.user.group }
-          else
-            { color: 'gray', text: 'No Group' }
-          end
-        %>
-
-        <div class="task-card bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-lg transition group" data-task-id="<%= task.id %>">
-          <!-- Default View (Full Card) -->
-          <div class="task-card-default p-6">
-            <div class="flex items-start gap-6">
-              <!-- Task Number / ID -->
-              <div class="flex-shrink-0 w-16 h-16 bg-<%= color[:bg] %>-100 dark:bg-<%= color[:bg] %>-900/30 text-<%= color[:bg] %>-700 dark:text-<%= color[:bg] %>-400 rounded-lg flex items-center justify-center font-mono text-xl font-bold">
-                #<%= task.id %>
-              </div>
-
-              <!-- Task Content -->
-              <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-4 mb-2">
-                  <%= link_to task_path(task) do %>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer">
-                      <%= task.title %>
-                    </h3>
-                  <% end %>
-                  <span class="flex-shrink-0 px-3 py-1 bg-<%= group_config[:color] %>-100 dark:bg-<%= group_config[:color] %>-900/30 text-<%= group_config[:color] %>-800 dark:text-<%= group_config[:color] %>-400 text-xs font-bold uppercase rounded-full">
-                    <%= group_config[:text] %>
-                  </span>
-                </div>
-
-                <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-                  <%= task.description %>
-                </p>
-
-                <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-                  <div class="flex items-center gap-1">
-                    <span class="font-mono">👤</span>
-                    <span>Created by <strong class="text-gray-700 dark:text-gray-300"><%= task.user.email.split('@').first %></strong></span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span>⬆️</span>
-                    <span class="font-semibold"><%= task.upvotes_count %></span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span>💬</span>
-                    <span class="font-semibold"><%= task.submissions_count %> submissions</span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span>⏱️</span>
-                    <span><%= time_ago_in_words(task.created_at) %> ago</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Collapsed View (Minimal Card) -->
-          <div class="task-card-collapsed hidden p-4">
-            <div class="flex items-center gap-4">
-              <!-- Task Number -->
-              <div class="flex-shrink-0 w-12 h-12 bg-<%= color[:bg] %>-100 dark:bg-<%= color[:bg] %>-900/30 text-<%= color[:bg] %>-700 dark:text-<%= color[:bg] %>-400 rounded-lg flex items-center justify-center font-mono text-sm font-bold">
-                #<%= task.id %>
-              </div>
-
-              <!-- Title -->
-              <%= link_to task_path(task), class: "flex-1" do %>
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition cursor-pointer truncate">
-                  <%= task.title %>
-                </h3>
-              <% end %>
-
-              <!-- Stats -->
-              <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                <div class="flex items-center gap-1">
-                  <span>⬆️</span>
-                  <span class="font-semibold"><%= task.upvotes_count %></span>
-                </div>
-                <div class="flex items-center gap-1">
-                  <span>💬</span>
-                  <span class="font-semibold"><%= task.submissions_count %></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      <% end %>
-    <% else %>
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-12 text-center">
-        <div class="text-6xl mb-4">📋</div>
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">No tasks yet</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">Be the first to create a challenge for the community!</p>
-        <%= link_to new_task_path, class: "px-6 py-3 bg-emerald-500 text-black font-bold text-sm uppercase tracking-wider hover:bg-emerald-400 transition rounded" do %>
-          + Create First Task
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-
-  <!-- Pagination -->
-  <div class="mt-8 flex items-center justify-center gap-2">
-    <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50" disabled>
-      Previous
-    </button>
-    <button class="px-4 py-2 bg-emerald-500 text-black font-bold rounded">
-      1
-    </button>
-    <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-      2
-    </button>
-    <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-      3
-    </button>
-    <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-      Next
-    </button>
-  </div>
-
-  <script>
-    function initializeTaskView() {
-      const defaultViewBtn = document.getElementById('defaultViewBtn');
-      const collapsedViewBtn = document.getElementById('collapsedViewBtn');
-      const taskCards = document.querySelectorAll('.task-card');
-
-      if (!defaultViewBtn || !collapsedViewBtn) return;
-
-      function setView(viewType) {
-        taskCards.forEach(card => {
-          const defaultView = card.querySelector('.task-card-default');
-          const collapsedView = card.querySelector('.task-card-collapsed');
-
-          if (viewType === 'default') {
-            defaultView.classList.remove('hidden');
-            collapsedView.classList.add('hidden');
-          } else {
-            defaultView.classList.add('hidden');
-            collapsedView.classList.remove('hidden');
-          }
-        });
-
-        if (viewType === 'default') {
-          defaultViewBtn.classList.remove('bg-gray-200', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
-          defaultViewBtn.classList.add('bg-gray-900', 'dark:bg-gray-700', 'text-white');
-          collapsedViewBtn.classList.remove('bg-gray-900', 'dark:bg-gray-700', 'text-white');
-          collapsedViewBtn.classList.add('bg-gray-200', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
-        } else {
-          collapsedViewBtn.classList.remove('bg-gray-200', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
-          collapsedViewBtn.classList.add('bg-gray-900', 'dark:bg-gray-700', 'text-white');
-          defaultViewBtn.classList.remove('bg-gray-900', 'dark:bg-gray-700', 'text-white');
-          defaultViewBtn.classList.add('bg-gray-200', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
-        }
-
-        localStorage.setItem('taskViewMode', viewType);
-      }
-
-      defaultViewBtn.addEventListener('click', () => setView('default'));
-      collapsedViewBtn.addEventListener('click', () => setView('collapsed'));
-
-      const savedView = localStorage.getItem('taskViewMode') || 'default';
-      if (savedView === 'collapsed') {
-        setView('collapsed');
-      }
-    }
-
-    // Initialize on initial page load
-    initializeTaskView();
-
-    // Re-initialize after Turbo Drive navigation
-    document.addEventListener('turbo:load', initializeTaskView);
-  </script>
+  <%= render "tasks_list" %>
 </div>

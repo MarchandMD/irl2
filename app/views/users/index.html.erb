@@ -114,9 +114,9 @@
         <!-- Member Since -->
         <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <span>Joined <%= time_ago_in_words(user.created_at) %> ago</span>
-          <button class="text-emerald-600 dark:text-emerald-400 hover:underline font-medium">
+          <%= link_to user_path(user), class: "text-emerald-600 dark:text-emerald-400 hover:underline font-medium" do %>
             View Profile →
-          </button>
+          <% end %>
         </div>
       </div>
     <% end %>

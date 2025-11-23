@@ -8,7 +8,7 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-require 'faker'
+require "faker"
 
 # Create users if they don't exist
 puts "Creating users..."
@@ -22,7 +22,7 @@ end
 # Create 100 tasks
 puts "Creating tasks..."
 users = User.all
-statuses = [ "open", "in_progress", "completed", "closed" ]
+statuses = ["open", "in_progress", "completed", "closed"]
 
 100.times do
   Task.create!(
