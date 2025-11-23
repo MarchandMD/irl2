@@ -14,6 +14,21 @@ class TasksController < ApplicationController
       @tasks = @tasks.joins(:user).where(users: {group: params[:group]})
     end
 
+    # Filter by status
+    if params[:status].present? && params[:status] != 'all'
+      @tasks = @tasks.where(status: params[:status])
+    end
+
+    # Sort tasks
+    @tasks = case params[:sort]
+    when 'popular'
+      @tasks.order(upvotes_count: :desc, created_at: :desc)
+    when 'active'
+      @tasks.order(submissions_count: :desc, created_at: :desc)
+    else # 'newest' or nil
+      @tasks.order(created_at: :desc)
+    end
+
     # Calculate stats
     @active_tasks_count = Task.where(status: "open").count
     @in_progress_count = Task.where(status: "in_progress").count
