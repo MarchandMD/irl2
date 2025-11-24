@@ -13,7 +13,7 @@
   </div>
 
   <!-- Main Settings Card -->
-  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 shadow-lg mb-8">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 shadow-lg mb-8" data-controller="profile">
     <div class="mb-6">
       <h2 class="text-2xl font-bold uppercase tracking-tight text-gray-900 dark:text-white mb-1">
         Profile Information
@@ -23,10 +23,51 @@
       </p>
     </div>
 
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, multipart: true }) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="space-y-6">
+        <!-- Profile Photo Section -->
+        <div>
+          <%= f.label :profile_photo, "Profile Photo", class: "block text-sm font-bold uppercase tracking-wide text-gray-700 dark:text-gray-300 mb-2" %>
+
+          <div class="flex items-center gap-6">
+            <!-- Current Photo Preview -->
+            <div class="flex-shrink-0">
+              <% if resource.profile_photo.attached? && resource.persisted? %>
+                <%= image_tag resource.profile_photo.variant(resize_to_limit: [150, 150]),
+                    class: "w-24 h-24 rounded-full object-cover border-4 border-emerald-500 shadow-lg",
+                    id: "profile-photo-preview" %>
+              <% else %>
+                <div id="profile-photo-preview" class="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg border-4 border-emerald-500">
+                  <%= resource.email[0].upcase %>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Upload Controls -->
+            <div class="flex-1">
+              <div class="flex items-center gap-4">
+                <%= f.file_field :profile_photo,
+                    accept: "image/png,image/jpeg,image/jpg,image/gif,image/webp",
+                    class: "block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 dark:file:bg-emerald-900/30 dark:file:text-emerald-400 dark:hover:file:bg-emerald-900/50 cursor-pointer",
+                    data: { action: "change->profile#previewPhoto" } %>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                PNG, JPG, GIF or WebP (max 5MB)
+              </p>
+              <% if resource.profile_photo.attached? %>
+                <div class="mt-2">
+                  <%= link_to "Remove Photo",
+                      remove_profile_photo_user_registration_path,
+                      data: { turbo_method: :delete, turbo_confirm: "Remove profile photo?" },
+                      class: "text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-semibold" %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
         <!-- Email Field -->
         <div>
           <%= f.label :email, class: "block text-sm font-bold uppercase tracking-wide text-gray-700 dark:text-gray-300 mb-2" %>

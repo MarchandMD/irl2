@@ -69,9 +69,14 @@
   <div class="bg-gradient-to-r <%= info[:gradient] %> rounded-2xl p-8 mb-8 shadow-lg">
     <div class="flex items-start gap-6">
       <!-- Avatar -->
-      <div class="flex-shrink-0 w-32 h-32 bg-white rounded-full flex items-center justify-center <%= info[:text_class] %> text-5xl font-bold shadow-xl border-4 border-white">
-        <%= @user.email[0].upcase %>
-      </div>
+      <% if @user.profile_photo.attached? %>
+        <%= image_tag @user.profile_photo.variant(resize_to_limit: [128, 128]),
+            class: "flex-shrink-0 w-32 h-32 rounded-full object-cover shadow-xl border-4 border-white" %>
+      <% else %>
+        <div class="flex-shrink-0 w-32 h-32 bg-white rounded-full flex items-center justify-center <%= info[:text_class] %> text-5xl font-bold shadow-xl border-4 border-white">
+          <%= @user.email[0].upcase %>
+        </div>
+      <% end %>
 
       <!-- Profile Info -->
       <div class="flex-1 text-white">
