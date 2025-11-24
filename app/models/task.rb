@@ -2,6 +2,8 @@ class Task < ApplicationRecord
   belongs_to :user
   has_many :upvotes, dependent: :destroy
   has_many :upvoters, through: :upvotes, source: :user
+  has_many :user_tasks, dependent: :destroy
+  has_many :completers, through: :user_tasks, source: :user
 
   GROUPS = [
     "Urban Nomads",

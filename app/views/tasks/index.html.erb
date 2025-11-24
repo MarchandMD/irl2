@@ -46,7 +46,7 @@
       <select data-task-filter-target="statusSelect" data-action="change->task-filter#updateFilters" class="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
         <option value="all" <%= 'selected' if params[:status].blank? || params[:status] == 'all' %>>All Tasks</option>
         <option value="open" <%= 'selected' if params[:status] == 'open' %>>Open</option>
-        <option value="in_progress" <%= 'selected' if params[:status] == 'in_progress' %>>In Progress</option>
+        <option value="bookmarked" <%= 'selected' if params[:status] == 'bookmarked' %>>Bookmarked</option>
         <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Completed</option>
       </select>
     </div>
@@ -61,16 +61,16 @@
   <!-- Task Stats -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @active_tasks_count %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Active Tasks</div>
+      <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @total_tasks_count %></div>
+      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Total tasks</div>
     </div>
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-blue-600 dark:text-blue-400"><%= @in_progress_count %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">In Progress</div>
+      <div class="text-3xl font-black text-blue-600 dark:text-blue-400"><%= @bookmarked_count %></div>
+      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">My bookmarked</div>
     </div>
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="text-3xl font-black text-purple-600 dark:text-purple-400"><%= @completed_count %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Completed</div>
+      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">My completed</div>
     </div>
   </div>
 

@@ -31,9 +31,9 @@ class TasksController < ApplicationController
     end
 
     # Calculate stats
-    @active_tasks_count = Task.where(status: "open").count
-    @in_progress_count = Task.where(status: "in_progress").count
-    @completed_count = Task.where(status: "completed").count
+    @total_tasks_count = Task.count
+    @bookmarked_count = Task.where(status: "bookmarked").count
+    @completed_count = current_user&.completed_tasks&.count || 0
     @total_users_count = User.count
 
     respond_to do |format|
