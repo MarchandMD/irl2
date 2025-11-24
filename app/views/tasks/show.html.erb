@@ -65,9 +65,15 @@
         Submit Solution
       </button>
       <% if user_signed_in? %>
-        <button class="px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded">
-          🔖 Bookmark
-        </button>
+        <% if @task.bookmarked_by?(current_user) %>
+          <%= button_to remove_bookmark_task_path(@task), method: :delete, class: "px-6 py-2 bg-yellow-600 text-white font-medium text-sm uppercase tracking-wider hover:bg-yellow-500 transition rounded" do %>
+            ✓ Bookmarked
+          <% end %>
+        <% else %>
+          <%= button_to bookmark_task_path(@task), method: :post, class: "px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded" do %>
+            🔖 Bookmark
+          <% end %>
+        <% end %>
       <% else %>
         <%= link_to new_user_session_path, class: "px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded" do %>
           🔖 Bookmark

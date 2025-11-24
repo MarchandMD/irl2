@@ -118,15 +118,21 @@
   </div>
 
   <!-- Stats Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       <div class="text-4xl font-black <%= info[:text_class] %> <%= info[:text_class_dark] %>"><%= @tasks.count %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Total Tasks</div>
+      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Tasks Created</div>
     </div>
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       <div class="text-4xl font-black text-green-600 dark:text-green-400"><%= @completed_tasks.count %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Completed</div>
     </div>
+    <% if user_signed_in? && current_user.id == @user.id %>
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="text-4xl font-black text-yellow-600 dark:text-yellow-400"><%= @bookmarked_tasks.count %></div>
+        <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Bookmarked</div>
+      </div>
+    <% end %>
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       <div class="text-4xl font-black text-emerald-600 dark:text-emerald-400"><%= @tasks.sum(:upvotes_count) %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Total Upvotes</div>
@@ -179,6 +185,11 @@
     <button id="filterAll" class="filter-btn active px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white font-medium text-sm uppercase tracking-wider rounded transition">
       All (<%= @tasks.count %>)
     </button>
+    <% if user_signed_in? && current_user.id == @user.id %>
+      <button id="filterBookmarked" class="filter-btn px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition">
+        🔖 Bookmarked (<%= @bookmarked_tasks.count %>)
+      </button>
+    <% end %>
     <button id="filterOpen" class="filter-btn px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium text-sm uppercase tracking-wider rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition">
       Open (<%= @open_tasks.count %>)
     </button>
@@ -192,7 +203,9 @@
 
   <!-- Tasks Section -->
   <div class="mb-6">
-    <h2 class="text-2xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-4">Created Tasks</h2>
+    <h2 class="text-2xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-4">
+      <span id="tasksTitle">Created Tasks</span>
+    </h2>
   </div>
 
   <% if @tasks.any? %>
@@ -279,9 +292,103 @@
           </div>
         </div>
       <% end %>
+
+      <% if user_signed_in? && current_user.id == @user.id %>
+        <% @bookmarked_tasks.each_with_index do |task, index| %>
+          <%
+            # Status badge colors
+            status_colors = {
+              'open' => {
+                bg_class: 'bg-green-100 dark:bg-green-900/30',
+                text_class: 'text-green-800 dark:text-green-400',
+                text: 'Open'
+              },
+              'in_progress' => {
+                bg_class: 'bg-blue-100 dark:bg-blue-900/30',
+                text_class: 'text-blue-800 dark:text-blue-400',
+                text: 'In Progress'
+              },
+              'completed' => {
+                bg_class: 'bg-gray-100 dark:bg-gray-900/30',
+                text_class: 'text-gray-800 dark:text-gray-400',
+                text: 'Completed'
+              }
+            }
+            status_config = status_colors[task.status] || {
+              bg_class: 'bg-gray-100 dark:bg-gray-900/30',
+              text_class: 'text-gray-800 dark:text-gray-400',
+              text: task.status
+            }
+
+            # Cycle through accent colors with full class names
+            accent_classes = [
+              { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-400' },
+              { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-400' },
+              { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-400' },
+              { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-400' },
+              { bg: 'bg-pink-100 dark:bg-pink-900/30', text: 'text-pink-700 dark:text-pink-400' },
+              { bg: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-700 dark:text-indigo-400' }
+            ]
+            accent = accent_classes[index % accent_classes.length]
+          %>
+
+          <div class="bookmarked-task-item bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-lg transition group" data-status="<%= task.status %>" style="display: none;">
+            <div class="p-6">
+              <div class="flex items-start gap-6">
+                <!-- Task Number / ID -->
+                <div class="flex-shrink-0 w-16 h-16 <%= accent[:bg] %> <%= accent[:text] %> rounded-lg flex items-center justify-center font-mono text-xl font-bold">
+                  #<%= task.id %>
+                </div>
+
+                <!-- Task Content -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between gap-4 mb-2">
+                    <%= link_to task_path(task) do %>
+                      <h3 class="text-xl font-bold text-gray-900 dark:text-white <%= info[:hover_class] %> transition cursor-pointer">
+                        <%= task.title %>
+                      </h3>
+                    <% end %>
+                    <div class="flex items-center gap-2">
+                      <span class="flex-shrink-0 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 text-xs font-bold uppercase rounded-full">
+                        🔖 Bookmarked
+                      </span>
+                      <span class="flex-shrink-0 px-3 py-1 <%= status_config[:bg_class] %> <%= status_config[:text_class] %> text-xs font-bold uppercase rounded-full">
+                        <%= status_config[:text] %>
+                      </span>
+                    </div>
+                  </div>
+
+                  <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+                    <%= task.description %>
+                  </p>
+
+                  <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center gap-1">
+                      <span class="font-mono">👤</span>
+                      <span>by <strong class="text-gray-700 dark:text-gray-300"><%= task.user.email.split('@').first %></strong></span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <span>⬆️</span>
+                      <span class="font-semibold"><%= task.upvotes_count %> upvotes</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <span>💬</span>
+                      <span class="font-semibold"><%= task.submissions_count %> submissions</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <span>⏱️</span>
+                      <span>Created <%= time_ago_in_words(task.created_at) %> ago</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
     </div>
   <% else %>
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-12 text-center">
+    <div id="emptyState" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-12 text-center">
       <div class="text-6xl mb-4">📋</div>
       <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">No tasks created yet</h3>
       <p class="text-gray-600 dark:text-gray-400 mb-6">
@@ -308,6 +415,9 @@
     function initializeProfileFilters() {
       const filterButtons = document.querySelectorAll('.filter-btn');
       const taskItems = document.querySelectorAll('.task-item');
+      const bookmarkedTaskItems = document.querySelectorAll('.bookmarked-task-item');
+      const tasksTitle = document.getElementById('tasksTitle');
+      const emptyState = document.getElementById('emptyState');
 
       filterButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -323,19 +433,58 @@
           // Get filter type from button id
           const filterType = this.id.replace('filter', '').toLowerCase();
 
-          // Filter tasks
-          taskItems.forEach(task => {
-            if (filterType === 'all') {
+          // Update title
+          if (filterType === 'bookmarked') {
+            tasksTitle.textContent = '🔖 Bookmarked Tasks';
+          } else if (filterType === 'all') {
+            tasksTitle.textContent = 'Created Tasks';
+          } else {
+            tasksTitle.textContent = 'Created Tasks - ' + filterType.charAt(0).toUpperCase() + filterType.slice(1).replace('inprogress', 'In Progress');
+          }
+
+          // Handle bookmarked filter
+          if (filterType === 'bookmarked') {
+            // Hide all created tasks
+            taskItems.forEach(task => {
+              task.style.display = 'none';
+            });
+            // Show all bookmarked tasks
+            bookmarkedTaskItems.forEach(task => {
               task.style.display = '';
-            } else {
-              const taskStatus = task.getAttribute('data-status');
-              if (filterType === 'inprogress') {
-                task.style.display = taskStatus === 'in_progress' ? '' : 'none';
-              } else {
-                task.style.display = taskStatus === filterType ? '' : 'none';
-              }
+            });
+            // Check if there are bookmarked tasks
+            if (bookmarkedTaskItems.length === 0 && emptyState) {
+              emptyState.style.display = '';
             }
-          });
+          } else {
+            // Hide all bookmarked tasks
+            bookmarkedTaskItems.forEach(task => {
+              task.style.display = 'none';
+            });
+            // Filter created tasks
+            let visibleCount = 0;
+            taskItems.forEach(task => {
+              if (filterType === 'all') {
+                task.style.display = '';
+                visibleCount++;
+              } else {
+                const taskStatus = task.getAttribute('data-status');
+                if (filterType === 'inprogress') {
+                  const shouldShow = taskStatus === 'in_progress';
+                  task.style.display = shouldShow ? '' : 'none';
+                  if (shouldShow) visibleCount++;
+                } else {
+                  const shouldShow = taskStatus === filterType;
+                  task.style.display = shouldShow ? '' : 'none';
+                  if (shouldShow) visibleCount++;
+                }
+              }
+            });
+            // Show empty state if no tasks visible
+            if (emptyState && visibleCount === 0) {
+              emptyState.style.display = '';
+            }
+          }
         });
       });
     }

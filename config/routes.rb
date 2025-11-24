@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     member do
       post :upvote
       delete :remove_upvote
+      post :bookmark
+      delete :remove_bookmark
     end
   end
   resources :groups, only: [:index]

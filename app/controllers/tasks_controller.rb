@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :upvote, :remove_upvote]
-  before_action :set_task, only: [:show, :upvote, :remove_upvote]
+  before_action :authenticate_user!, only: [:new, :create, :upvote, :remove_upvote, :bookmark, :remove_bookmark]
+  before_action :set_task, only: [:show, :upvote, :remove_upvote, :bookmark, :remove_bookmark]
 
   def index
     @tasks = Task.includes(:user).all
@@ -17,7 +17,11 @@ class TasksController < ApplicationController
 
     # Filter by status
     if params[:status].present? && params[:status] != "all"
-      @tasks = @tasks.where(status: params[:status])
+      if params[:status] == "bookmarked" && current_user
+        @tasks = @tasks.where(id: current_user.bookmarked_tasks.pluck(:id))
+      else
+        @tasks = @tasks.where(status: params[:status])
+      end
     end
 
     # Sort tasks
@@ -32,7 +36,7 @@ class TasksController < ApplicationController
 
     # Calculate stats
     @total_tasks_count = Task.count
-    @bookmarked_count = Task.where(status: "bookmarked").count
+    @bookmarked_count = current_user&.bookmarked_tasks&.count || 0
     @completed_count = current_user&.completed_tasks&.count || 0
     @total_users_count = User.count
 
@@ -55,6 +59,19 @@ class TasksController < ApplicationController
   def remove_upvote
     upvote = @task.upvotes.find_by(user: current_user)
     upvote&.destroy
+    redirect_to @task
+  end
+
+  def bookmark
+    unless @task.bookmarked_by?(current_user)
+      @task.bookmarks.create(user: current_user)
+    end
+    redirect_to @task
+  end
+
+  def remove_bookmark
+    bookmark = @task.bookmarks.find_by(user: current_user)
+    bookmark&.destroy
     redirect_to @task
   end
 

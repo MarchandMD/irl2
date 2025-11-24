@@ -4,6 +4,8 @@ class Task < ApplicationRecord
   has_many :upvoters, through: :upvotes, source: :user
   has_many :user_tasks, dependent: :destroy
   has_many :completers, through: :user_tasks, source: :user
+  has_many :bookmarks, dependent: :destroy
+  has_many :bookmarkers, through: :bookmarks, source: :user
 
   GROUPS = [
     "Urban Nomads",
@@ -33,5 +35,10 @@ class Task < ApplicationRecord
   def upvoted_by?(user)
     return false unless user
     upvotes.exists?(user_id: user.id)
+  end
+
+  def bookmarked_by?(user)
+    return false unless user
+    bookmarks.exists?(user_id: user.id)
   end
 end

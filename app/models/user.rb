@@ -9,4 +9,6 @@ class User < ApplicationRecord
   has_many :upvoted_tasks, through: :upvotes, source: :task
   has_many :user_tasks, dependent: :destroy
   has_many :completed_tasks, through: :user_tasks, source: :task
+  has_many :bookmarks, dependent: :destroy
+  has_many :bookmarked_tasks, through: :bookmarks, source: :task
 end
