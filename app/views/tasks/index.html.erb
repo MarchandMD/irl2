@@ -59,7 +59,7 @@
   </div>
 
   <!-- Task Stats -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @active_tasks_count %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Active Tasks</div>
@@ -71,10 +71,6 @@
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="text-3xl font-black text-purple-600 dark:text-purple-400"><%= @completed_count %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Completed</div>
-    </div>
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-3xl font-black text-orange-600 dark:text-orange-400"><%= number_to_human(@total_users_count, precision: 1, significant: false, delimiter: ',') %></div>
-      <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Total Users</div>
     </div>
   </div>
 
