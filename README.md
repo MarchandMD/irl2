@@ -15,6 +15,8 @@ A Ruby on Rails application for task and group management.
 
 IRL2 is an open source project built with Ruby on Rails, featuring user authentication, task management, and group collaboration capabilities.
 
+![Homepage Screenshot](app/assets/images/homepage-screenshot.png)
+
 ## Local Development
 
 ### Prerequisites
