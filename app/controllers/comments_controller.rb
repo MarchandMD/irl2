@@ -9,7 +9,7 @@ class CommentsController < ApplicationController
     if @comment.save
       redirect_back fallback_location: root_path, notice: "Comment added successfully."
     else
-      redirect_back fallback_location: root_path, alert: "Failed to add comment: #{@comment.errors.full_messages.join(', ')}"
+      redirect_back fallback_location: root_path, alert: "Failed to add comment: #{@comment.errors.full_messages.join(", ")}"
     end
   end
 

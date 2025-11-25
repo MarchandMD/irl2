@@ -8,7 +8,7 @@ class FixUpvotesTableConstraints < ActiveRecord::Migration[8.0]
 
     # Add a new composite unique index that covers both task and polymorphic upvotable
     add_index :upvotes, [:user_id, :task_id, :upvotable_type, :upvotable_id],
-              unique: true,
-              name: "index_upvotes_on_user_and_votable"
+      unique: true,
+      name: "index_upvotes_on_user_and_votable"
   end
 end

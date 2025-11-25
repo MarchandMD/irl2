@@ -17,12 +17,12 @@ class TasksController < ApplicationController
 
     # Filter by status
     if params[:status].present? && params[:status] != "all"
-      if params[:status] == "bookmarked" && current_user
-        @tasks = @tasks.where(id: current_user.bookmarked_tasks.pluck(:id))
+      @tasks = if params[:status] == "bookmarked" && current_user
+        @tasks.where(id: current_user.bookmarked_tasks.pluck(:id))
       elsif params[:status] == "completed" && current_user
-        @tasks = @tasks.where(id: current_user.user_tasks.where.not(submitted_at: nil).pluck(:task_id))
+        @tasks.where(id: current_user.user_tasks.where.not(submitted_at: nil).pluck(:task_id))
       else
-        @tasks = @tasks.where(status: params[:status])
+        @tasks.where(status: params[:status])
       end
     end
 

@@ -19,7 +19,7 @@ class SubmissionsController < ApplicationController
     if @user_task.save
       redirect_to @task, notice: "Submission created successfully."
     else
-      redirect_to @task, alert: "Failed to create submission: #{@user_task.errors.full_messages.join(', ')}"
+      redirect_to @task, alert: "Failed to create submission: #{@user_task.errors.full_messages.join(", ")}"
     end
   end
 
