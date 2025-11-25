@@ -61,9 +61,21 @@
           ⬆️ Upvote (<%= @task.upvotes_count %>)
         <% end %>
       <% end %>
-      <button class="px-6 py-2 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded">
-        Submit Solution
-      </button>
+      <% if user_signed_in? %>
+        <% if @task.user_tasks.exists?(user: current_user) %>
+          <button class="px-6 py-2 bg-green-600 text-white font-bold text-sm uppercase tracking-wider rounded cursor-not-allowed" disabled>
+            ✓ Submitted
+          </button>
+        <% else %>
+          <button onclick="document.getElementById('submission-modal').classList.remove('hidden')" class="px-6 py-2 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded">
+            Submit Solution
+          </button>
+        <% end %>
+      <% else %>
+        <%= link_to new_user_session_path, class: "px-6 py-2 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded" do %>
+          Submit Solution
+        <% end %>
+      <% end %>
       <% if user_signed_in? %>
         <% if @task.bookmarked_by?(current_user) %>
           <%= button_to remove_bookmark_task_path(@task), method: :delete, class: "px-6 py-2 bg-yellow-600 text-white font-medium text-sm uppercase tracking-wider hover:bg-yellow-500 transition rounded" do %>
@@ -96,7 +108,7 @@
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Submissions</div>
     </div>
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="text-4xl font-black text-purple-600 dark:text-purple-400 mb-2">0</div>
+      <div class="text-4xl font-black text-purple-600 dark:text-purple-400 mb-2"><%= @task.comments_count %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">Comments</div>
     </div>
   </div>
@@ -152,40 +164,260 @@
     </div>
   </div>
 
-  <!-- Submissions Section (Placeholder) -->
+  <!-- Submissions Section -->
   <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 mb-6">
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-tight">Submissions</h2>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-tight">
+      Submissions (<%= @task.submissions_count %>)
+    </h2>
 
-    <% if @task.submissions_count > 0 %>
-      <div class="text-center py-8">
-        <div class="text-5xl mb-4">📝</div>
-        <p class="text-gray-600 dark:text-gray-400 mb-2">
-          <strong class="text-2xl text-gray-900 dark:text-white"><%= @task.submissions_count %></strong>
-          <%= @task.submissions_count == 1 ? 'submission' : 'submissions' %> received
-        </p>
-        <p class="text-sm text-gray-500 dark:text-gray-500">Submission details coming soon</p>
+    <% if @task.user_tasks.where.not(submitted_at: nil).any? %>
+      <div class="space-y-6">
+        <% @task.user_tasks.where.not(submitted_at: nil).order(submitted_at: :desc).each do |submission| %>
+          <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:border-emerald-400 dark:hover:border-emerald-600 transition">
+            <!-- Submission Header -->
+            <div class="flex items-start gap-4 mb-4">
+              <% if submission.user.profile_photo.attached? %>
+                <%= image_tag submission.user.profile_photo, class: "w-12 h-12 rounded-full object-cover" %>
+              <% else %>
+                <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold text-lg">
+                  <%= submission.user.email[0].upcase %>
+                </div>
+              <% end %>
+              <div class="flex-1">
+                <div class="font-bold text-gray-900 dark:text-white">
+                  <%= submission.user.email.split('@').first %>
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  <%= time_ago_in_words(submission.submitted_at) %> ago
+                </div>
+              </div>
+            </div>
+
+            <!-- Submission Text -->
+            <% if submission.submission_text.present? %>
+              <div class="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                <%= submission.submission_text %>
+              </div>
+            <% end %>
+
+            <!-- Submission Media -->
+            <% if submission.submission_media.attached? %>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <% submission.submission_media.each do |media| %>
+                  <% if media.content_type.start_with?('image/') %>
+                    <%= image_tag media, class: "w-full rounded-lg border border-gray-200 dark:border-gray-700" %>
+                  <% elsif media.content_type.start_with?('video/') %>
+                    <video controls class="w-full rounded-lg border border-gray-200 dark:border-gray-700">
+                      <%= tag.source src: url_for(media), type: media.content_type %>
+                    </video>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+
+            <!-- Submission Actions -->
+            <div class="flex items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <% if user_signed_in? %>
+                <% if submission.upvoted_by?(current_user) %>
+                  <%= button_to remove_upvote_task_submission_path(@task, submission), method: :delete, class: "flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded hover:bg-emerald-500 transition" do %>
+                    <span>⬆️</span>
+                    <span><%= submission.upvotes_count %></span>
+                  <% end %>
+                <% else %>
+                  <%= button_to upvote_task_submission_path(@task, submission), method: :post, class: "flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition" do %>
+                    <span>⬆️</span>
+                    <span><%= submission.upvotes_count %></span>
+                  <% end %>
+                <% end %>
+              <% else %>
+                <%= link_to new_user_session_path, class: "flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition" do %>
+                  <span>⬆️</span>
+                  <span><%= submission.upvotes_count %></span>
+                <% end %>
+              <% end %>
+
+              <button onclick="document.getElementById('comment-form-submission-<%= submission.id %>').classList.toggle('hidden')" class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                <span>💬</span>
+                <span><%= submission.comments_count %></span>
+              </button>
+            </div>
+
+            <!-- Comments Section for Submission -->
+            <% if submission.comments.any? %>
+              <div class="mt-4 space-y-3 pl-4 border-l-2 border-gray-200 dark:border-gray-700">
+                <% submission.comments.each do |comment| %>
+                  <div class="text-sm">
+                    <div class="flex items-start gap-2">
+                      <span class="font-bold text-gray-900 dark:text-white"><%= comment.user.email.split('@').first %>:</span>
+                      <span class="text-gray-700 dark:text-gray-300 flex-1"><%= comment.content %></span>
+                      <% if user_signed_in? && (comment.user == current_user || submission.user == current_user) %>
+                        <%= button_to submission_comment_path(submission, comment), method: :delete, data: { confirm: "Delete this comment?" }, class: "text-red-500 hover:text-red-700 text-xs" do %>
+                          ×
+                        <% end %>
+                      <% end %>
+                    </div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                      <%= time_ago_in_words(comment.created_at) %> ago
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <!-- Comment Form for Submission -->
+            <% if user_signed_in? %>
+              <div id="comment-form-submission-<%= submission.id %>" class="hidden mt-4 pl-4 border-l-2 border-blue-500">
+                <%= form_with model: Comment.new, url: submission_comments_path(submission), class: "flex gap-2" do |f| %>
+                  <%= f.text_field :content, placeholder: "Add a comment...", class: "flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm", required: true %>
+                  <%= f.submit "Post", class: "px-4 py-2 bg-blue-500 text-white text-sm font-bold rounded hover:bg-blue-400 transition" %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </div>
     <% else %>
       <div class="text-center py-8">
         <div class="text-5xl mb-4">📝</div>
         <p class="text-gray-600 dark:text-gray-400 mb-4">No submissions yet. Be the first to submit a solution!</p>
-        <button class="px-6 py-3 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded">
-          Submit First Solution
-        </button>
+        <% if user_signed_in? && !@task.user_tasks.exists?(user: current_user) %>
+          <button onclick="document.getElementById('submission-modal').classList.remove('hidden')" class="px-6 py-3 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded">
+            Submit First Solution
+          </button>
+        <% end %>
       </div>
     <% end %>
   </div>
 
-  <!-- Comments Section (Placeholder) -->
+  <!-- Comments Section -->
   <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8">
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-tight">Comments</h2>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-tight">
+      Comments (<%= @task.comments_count %>)
+    </h2>
 
-    <div class="text-center py-8">
-      <div class="text-5xl mb-4">💬</div>
-      <p class="text-gray-600 dark:text-gray-400 mb-4">No comments yet. Start the conversation!</p>
-      <button class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-sm uppercase tracking-wider hover:bg-gray-300 dark:hover:bg-gray-600 transition rounded">
-        Add Comment
-      </button>
-    </div>
+    <% if user_signed_in? %>
+      <!-- Add Comment Form -->
+      <div class="mb-8">
+        <%= form_with model: Comment.new, url: task_comments_path(@task), class: "space-y-4" do |f| %>
+          <div>
+            <%= f.text_area :content, rows: 3, placeholder: "Share thoughts, ask questions, or provide feedback...", class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white", required: true %>
+          </div>
+          <div class="flex justify-end">
+            <%= f.submit "Post Comment", class: "px-6 py-3 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded cursor-pointer" %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="mb-8 p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg">
+        <p class="text-gray-700 dark:text-gray-300 text-center">
+          <%= link_to "Sign in", new_user_session_path, class: "text-blue-500 hover:text-blue-600 font-bold" %> to post a comment
+        </p>
+      </div>
+    <% end %>
+
+    <!-- Comments List -->
+    <% if @task.comments.any? %>
+      <div class="space-y-6">
+        <% @task.comments.each do |comment| %>
+          <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+            <div class="flex items-start gap-4">
+              <% if comment.user.profile_photo.attached? %>
+                <%= image_tag comment.user.profile_photo, class: "w-10 h-10 rounded-full object-cover" %>
+              <% else %>
+                <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-400 font-bold">
+                  <%= comment.user.email[0].upcase %>
+                </div>
+              <% end %>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="font-bold text-gray-900 dark:text-white"><%= comment.user.email.split('@').first %></span>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">•</span>
+                  <span class="text-sm text-gray-500 dark:text-gray-400"><%= time_ago_in_words(comment.created_at) %> ago</span>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  <%= comment.content %>
+                </p>
+              </div>
+              <% if user_signed_in? && (comment.user == current_user || @task.user == current_user) %>
+                <%= button_to task_comment_path(@task, comment), method: :delete, data: { confirm: "Delete this comment?" }, class: "text-red-500 hover:text-red-700 font-bold" do %>
+                  ×
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <div class="text-5xl mb-4">💬</div>
+        <p class="text-gray-600 dark:text-gray-400">No comments yet. Start the conversation!</p>
+      </div>
+    <% end %>
   </div>
 </div>
+
+<!-- Submission Modal -->
+<% if user_signed_in? && !@task.user_tasks.exists?(user: current_user) %>
+  <div id="submission-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <!-- Modal Header -->
+      <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Submit Solution</h3>
+        <button onclick="document.getElementById('submission-modal').classList.add('hidden')" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl">
+          ×
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6">
+        <%= form_with model: @task.user_tasks.build, url: task_submissions_path(@task), multipart: true, data: { controller: "file-upload-preview" } do |f| %>
+          <!-- Text Area -->
+          <div class="mb-6">
+            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">
+              Description
+            </label>
+            <%= f.text_area :submission_text, rows: 6, class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white", placeholder: "Describe your solution..." %>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              💡 Explain your approach, challenges faced, and key learnings
+            </p>
+          </div>
+
+          <!-- File Upload -->
+          <div class="mb-6">
+            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">
+              Media (Photos/Videos)
+            </label>
+            <%= f.file_field :submission_media, multiple: true, accept: "image/png,image/jpg,image/jpeg,image/gif,image/webp,video/mp4,video/quicktime,video/x-msvideo", class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300", data: { action: "change->file-upload-preview#preview" } %>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              📸 Upload screenshots, photos, or videos (Images: max 5MB, Videos: max 50MB)
+            </p>
+          </div>
+
+          <!-- Preview Area -->
+          <div id="file-preview" data-file-upload-preview-target="preview" class="mb-6 hidden">
+            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">
+              Preview
+            </label>
+            <div class="grid grid-cols-2 gap-4" data-file-upload-preview-target="container">
+            </div>
+          </div>
+
+          <!-- Requirement Notice -->
+          <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <p class="text-sm text-blue-800 dark:text-blue-300">
+              ℹ️ <strong>Note:</strong> Include either text or media (or both) for submission.
+            </p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-3">
+            <%= f.submit "Submit Solution", class: "flex-1 px-6 py-3 bg-blue-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-blue-400 transition rounded cursor-pointer" %>
+            <button type="button" onclick="document.getElementById('submission-modal').classList.add('hidden')" class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold text-sm uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded">
+              Cancel
+            </button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

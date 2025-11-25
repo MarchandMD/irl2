@@ -17,5 +17,6 @@ class UsersController < ApplicationController
     @in_progress_tasks = @tasks.where(status: "in_progress")
     @open_tasks = @tasks.where(status: "open")
     @bookmarked_tasks = @user.bookmarked_tasks.order(created_at: :desc)
+    @completed_submissions = @user.user_tasks.where(completed: true)
   end
 end

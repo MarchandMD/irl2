@@ -6,6 +6,7 @@ class Task < ApplicationRecord
   has_many :completers, through: :user_tasks, source: :user
   has_many :bookmarks, dependent: :destroy
   has_many :bookmarkers, through: :bookmarks, source: :user
+  has_many :comments, as: :commentable, dependent: :destroy
 
   GROUPS = [
     "Urban Nomads",

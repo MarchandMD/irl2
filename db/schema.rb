@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_24_060204) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_25_042408) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_24_060204) do
     t.index ["user_id"], name: "index_bookmarks_on_user_id"
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "commentable_type", null: false
+    t.bigint "commentable_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -63,16 +74,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_24_060204) do
     t.integer "submissions_count", default: 0
     t.string "recommended_group"
     t.integer "bookmarks_count", default: 0, null: false
+    t.integer "comments_count", default: 0, null: false
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
   create_table "upvotes", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "task_id", null: false
+    t.bigint "task_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "upvotable_type"
+    t.bigint "upvotable_id"
     t.index ["task_id"], name: "index_upvotes_on_task_id"
-    t.index ["user_id", "task_id"], name: "index_upvotes_on_user_id_and_task_id", unique: true
+    t.index ["upvotable_type", "upvotable_id"], name: "index_upvotes_on_upvotable"
+    t.index ["user_id", "task_id", "upvotable_type", "upvotable_id"], name: "index_upvotes_on_user_and_votable", unique: true
     t.index ["user_id"], name: "index_upvotes_on_user_id"
   end
 
@@ -81,6 +96,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_24_060204) do
     t.bigint "task_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "submission_text"
+    t.datetime "submitted_at"
+    t.integer "comments_count", default: 0, null: false
+    t.integer "upvotes_count", default: 0, null: false
+    t.boolean "completed", default: false, null: false
     t.index ["task_id"], name: "index_user_tasks_on_task_id"
     t.index ["user_id", "task_id"], name: "index_user_tasks_on_user_id_and_task_id", unique: true
     t.index ["user_id"], name: "index_user_tasks_on_user_id"
@@ -103,6 +123,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_24_060204) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bookmarks", "tasks"
   add_foreign_key "bookmarks", "users"
+  add_foreign_key "comments", "users"
   add_foreign_key "tasks", "users"
   add_foreign_key "upvotes", "tasks"
   add_foreign_key "upvotes", "users"

@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :completed_tasks, through: :user_tasks, source: :task
   has_many :bookmarks, dependent: :destroy
   has_many :bookmarked_tasks, through: :bookmarks, source: :task
+  has_many :comments, dependent: :destroy
 
   validate :acceptable_profile_photo
 

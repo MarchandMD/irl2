@@ -75,51 +75,54 @@
       </div>
 
       <div class="space-y-4">
-        <!-- Fake Entry 1 -->
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-6 items-start">
-          <div class="w-full md:w-48 h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 bg-[url('https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=300&q=80')] bg-cover bg-center">
-          </div>
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded uppercase">Completed</span>
-              <span class="text-gray-500 text-sm font-mono">Task #8291: "Urban Archaeology"</span>
+        <% if @recent_submissions.any? %>
+          <% @recent_submissions.each do |submission| %>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-6 items-start">
+              <% if submission.submission_media.attached? %>
+                <div class="w-full md:w-48 h-32 bg-gray-200 rounded-md overflow-hidden">
+                  <% first_media = submission.submission_media.first %>
+                  <% if first_media.content_type.start_with?('image/') %>
+                    <%= image_tag first_media, class: "w-full h-full object-cover" %>
+                  <% elsif first_media.content_type.start_with?('video/') %>
+                    <%= video_tag first_media, class: "w-full h-full object-cover", controls: false, muted: true, autoplay: true, loop: true %>
+                  <% end %>
+                </div>
+              <% else %>
+                <div class="w-full md:w-48 h-32 bg-gray-200 dark:bg-gray-700 rounded-md flex items-center justify-center text-gray-400">
+                  <span class="text-4xl">📝</span>
+                </div>
+              <% end %>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded uppercase">Completed</span>
+                  <span class="text-gray-500 text-sm font-mono">Task #<%= submission.task.id %>: "<%= submission.task.title %>"</span>
+                </div>
+                <h3 class="text-lg font-bold mb-2 dark:text-white">
+                  <%= link_to submission.task.title, task_path(submission.task), class: "hover:text-blue-600 dark:hover:text-blue-400" %>
+                </h3>
+                <% if submission.submission_text.present? %>
+                  <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                    "<%= truncate(submission.submission_text, length: 150) %>"
+                  </p>
+                <% end %>
+                <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                  <span><strong><%= link_to submission.user.email.split('@').first, user_path(submission.user), class: "hover:text-blue-600 dark:hover:text-blue-400" %></strong></span>
+                  <span>•</span>
+                  <span><%= time_ago_in_words(submission.submitted_at) %> ago</span>
+                </div>
+              </div>
             </div>
-            <h3 class="text-lg font-bold mb-2 dark:text-white">Found a relic from 1995 behind the library</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
-              "I dug around the old foundation as instructed. Found a soda can and this strange plastic toy..."
-            </p>
-            <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-              <span><strong>NeonTiger</strong></span>
-              <span>•</span>
-              <span>2 hours ago</span>
-            </div>
+          <% end %>
+        <% else %>
+          <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+            <p class="text-lg mb-4">No field reports yet...</p>
+            <p class="text-sm">Be the first to complete a task and submit proof!</p>
           </div>
-        </div>
-
-        <!-- Fake Entry 2 -->
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-6 items-start">
-          <div class="w-full md:w-48 h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-400 bg-[url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=300&q=80')] bg-cover bg-center">
-          </div>
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded uppercase">New Challenge</span>
-              <span class="text-gray-500 text-sm font-mono">Task #8292</span>
-            </div>
-            <h3 class="text-lg font-bold mb-2 dark:text-white">Task: The Midnight Coffee Run</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
-              "Go to a 24-hour diner between 3 AM and 4 AM. Order a black coffee. Leave a poem on a napkin for the next person..."
-            </p>
-            <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-              <span><strong>NightOwl</strong></span>
-              <span>•</span>
-              <span>45 mins ago</span>
-            </div>
-          </div>
-        </div>
+        <% end %>
       </div>
 
       <div class="text-center mt-10">
-        <a href="#" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">View All Transmissions &rarr;</a>
+        <a href="/tasks" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">View All Tasks &rarr;</a>
       </div>
     </div>
   </section>

@@ -12,6 +12,16 @@ Rails.application.routes.draw do
       post :bookmark
       delete :remove_bookmark
     end
+    resources :submissions, only: [:create] do
+      member do
+        post :upvote
+        delete :remove_upvote
+      end
+    end
+    resources :comments, only: [:create, :destroy]
+  end
+  resources :submissions, only: [] do
+    resources :comments, only: [:create, :destroy]
   end
   resources :groups, only: [:index]
   get "/about", to: "about#index"

@@ -41,7 +41,12 @@
           <% if user_signed_in? %>
             <div class="relative" id="userMenu">
               <button id="userMenuButton" class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white font-medium text-sm transition">
-                <span class="text-emerald-400">👤</span>
+                <% if current_user.profile_photo.attached? %>
+                  <%= image_tag current_user.profile_photo,
+                      class: "w-8 h-8 rounded-full object-cover border-2 border-emerald-400" %>
+                <% else %>
+                  <span class="text-emerald-400">👤</span>
+                <% end %>
                 <span><%= current_user.email.split('@').first %></span>
                 <span class="text-xs">▼</span>
               </button>

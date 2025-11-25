@@ -70,7 +70,7 @@
     <div class="flex items-start gap-6">
       <!-- Avatar -->
       <% if @user.profile_photo.attached? %>
-        <%= image_tag @user.profile_photo.variant(resize_to_limit: [128, 128]),
+        <%= image_tag @user.profile_photo,
             class: "flex-shrink-0 w-32 h-32 rounded-full object-cover shadow-xl border-4 border-white" %>
       <% else %>
         <div class="flex-shrink-0 w-32 h-32 bg-white rounded-full flex items-center justify-center <%= info[:text_class] %> text-5xl font-bold shadow-xl border-4 border-white">
@@ -129,7 +129,7 @@
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Tasks Created</div>
     </div>
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-      <div class="text-4xl font-black text-green-600 dark:text-green-400"><%= @completed_tasks.count %></div>
+      <div class="text-4xl font-black text-green-600 dark:text-green-400"><%= @completed_submissions.count %></div>
       <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Completed</div>
     </div>
     <% if user_signed_in? && current_user.id == @user.id %>

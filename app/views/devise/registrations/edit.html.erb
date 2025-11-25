@@ -34,8 +34,8 @@
           <div class="flex items-center gap-6">
             <!-- Current Photo Preview -->
             <div class="flex-shrink-0">
-              <% if resource.profile_photo.attached? && resource.persisted? %>
-                <%= image_tag resource.profile_photo.variant(resize_to_limit: [150, 150]),
+              <% if resource.profile_photo.attached? %>
+                <%= image_tag resource.profile_photo,
                     class: "w-24 h-24 rounded-full object-cover border-4 border-emerald-500 shadow-lg",
                     id: "profile-photo-preview" %>
               <% else %>

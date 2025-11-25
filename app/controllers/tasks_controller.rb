@@ -19,6 +19,8 @@ class TasksController < ApplicationController
     if params[:status].present? && params[:status] != "all"
       if params[:status] == "bookmarked" && current_user
         @tasks = @tasks.where(id: current_user.bookmarked_tasks.pluck(:id))
+      elsif params[:status] == "completed" && current_user
+        @tasks = @tasks.where(id: current_user.user_tasks.where.not(submitted_at: nil).pluck(:task_id))
       else
         @tasks = @tasks.where(status: params[:status])
       end
@@ -37,7 +39,7 @@ class TasksController < ApplicationController
     # Calculate stats
     @total_tasks_count = Task.count
     @bookmarked_count = current_user&.bookmarked_tasks&.count || 0
-    @completed_count = current_user&.completed_tasks&.count || 0
+    @completed_count = current_user&.user_tasks&.where&.not(submitted_at: nil)&.count || 0
     @total_users_count = User.count
 
     respond_to do |format|
