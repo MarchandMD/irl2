@@ -45,8 +45,10 @@ class SubmissionsController < ApplicationController
       end
     end
 
-    @submission.submission_text = submission_params[:submission_text]
+    # Update submission text
+    @submission.assign_attributes(submission_text: submission_params[:submission_text])
 
+    # Attach new media if provided
     if submission_params[:submission_media].present?
       @submission.submission_media.attach(submission_params[:submission_media])
     end
@@ -54,7 +56,7 @@ class SubmissionsController < ApplicationController
     if @submission.save
       redirect_to @task, notice: "Submission updated successfully."
     else
-      redirect_to @task, alert: "Failed to update submission: #{@submission.errors.full_messages.join(", ")}"
+      render :edit, status: :unprocessable_entity
     end
   end
 

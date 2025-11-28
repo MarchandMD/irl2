@@ -57,7 +57,7 @@
         function markMediaForRemoval(mediaId) {
           const mediaElement = document.getElementById('media-' + mediaId);
           const isMarked = mediaElement.classList.contains('marked-for-removal');
-          
+
           if (isMarked) {
             // Unmark for removal
             mediaElement.classList.remove('marked-for-removal');
