@@ -1,8 +1,8 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_task, only: [:create, :edit, :update, :remove_media]
-  before_action :set_submission, only: [:edit, :update, :upvote, :remove_upvote, :remove_media]
-  before_action :authorize_submission_owner, only: [:edit, :update, :remove_media]
+  before_action :set_task, only: [:create, :edit, :update]
+  before_action :set_submission, only: [:edit, :update, :upvote, :remove_upvote]
+  before_action :authorize_submission_owner, only: [:edit, :update]
 
   def index
     @submissions = UserTask.includes(:user, :task).order(created_at: :desc)
@@ -33,6 +33,18 @@ class SubmissionsController < ApplicationController
   end
 
   def update
+    # Remove media marked for deletion
+    if params[:user_task] && params[:user_task][:remove_media_ids].present?
+      media_ids = params[:user_task][:remove_media_ids].reject(&:blank?)
+      media_ids.each do |media_id|
+        attachment = @submission.submission_media.find(media_id)
+        attachment.purge
+      rescue ActiveRecord::RecordNotFound
+        # Media already deleted or doesn't exist
+        next
+      end
+    end
+
     @submission.submission_text = submission_params[:submission_text]
 
     if submission_params[:submission_media].present?
@@ -44,14 +56,6 @@ class SubmissionsController < ApplicationController
     else
       redirect_to @task, alert: "Failed to update submission: #{@submission.errors.full_messages.join(", ")}"
     end
-  end
-
-  def remove_media
-    media = @submission.submission_media.find(params[:media_id])
-    media.purge
-    redirect_to edit_task_submission_path(@task, @submission), notice: "Media removed successfully."
-  rescue ActiveRecord::RecordNotFound
-    redirect_to edit_task_submission_path(@task, @submission), alert: "Media not found."
   end
 
   def upvote

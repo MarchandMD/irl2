@@ -31,9 +31,9 @@
           <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">
             Current Media
           </label>
-          <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="grid grid-cols-2 gap-4 mb-4" id="current-media-grid">
             <% @submission.submission_media.each do |media| %>
-              <div class="relative group">
+              <div class="relative group" id="media-<%= media.id %>" data-media-id="<%= media.id %>">
                 <% if media.content_type.start_with?('image/') %>
                   <%= image_tag media, class: "w-full rounded-lg border border-gray-200 dark:border-gray-700" %>
                 <% elsif media.content_type.start_with?('video/') %>
@@ -41,17 +41,51 @@
                     <%= tag.source src: url_for(media), type: media.content_type %>
                   </video>
                 <% end %>
-                <%= button_to remove_media_task_submission_path(@task, @submission, media_id: media.id), method: :delete, data: { confirm: "Remove this media?" }, class: "absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg transition opacity-0 group-hover:opacity-100" do %>
+                <button type="button" onclick="markMediaForRemoval(<%= media.id %>)" class="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg transition opacity-0 group-hover:opacity-100">
                   ×
-                <% end %>
+                </button>
               </div>
             <% end %>
           </div>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            ℹ️ Hover over media to see delete button. Add new files below to include additional media.
+            ℹ️ Hover over media to see delete button. Marked media will be removed when form is submitted.
           </p>
         </div>
       <% end %>
+
+      <script>
+        function markMediaForRemoval(mediaId) {
+          const mediaElement = document.getElementById('media-' + mediaId);
+          const isMarked = mediaElement.classList.contains('marked-for-removal');
+          
+          if (isMarked) {
+            // Unmark for removal
+            mediaElement.classList.remove('marked-for-removal');
+            mediaElement.innerHTML = mediaElement.getAttribute('data-original-content');
+            // Remove hidden input
+            const hiddenInput = document.getElementById('remove-media-' + mediaId);
+            if (hiddenInput) hiddenInput.remove();
+          } else {
+            // Store original content
+            mediaElement.setAttribute('data-original-content', mediaElement.innerHTML);
+            // Mark for removal with placeholder
+            mediaElement.classList.add('marked-for-removal');
+            mediaElement.innerHTML = `
+              <div class="w-full h-full min-h-[200px] bg-gray-100 dark:bg-gray-700 rounded-lg border-2 border-dashed border-red-500 flex flex-col items-center justify-center p-4 cursor-pointer" onclick="markMediaForRemoval(${mediaId})" title="Click to undo">
+                <span class="text-4xl">📷</span>
+              </div>
+            `;
+            // Add hidden input to track removal
+            const form = document.querySelector('form');
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'user_task[remove_media_ids][]';
+            input.value = mediaId;
+            input.id = 'remove-media-' + mediaId;
+            form.appendChild(input);
+          }
+        }
+      </script>
 
       <!-- File Upload -->
       <div class="mb-6">

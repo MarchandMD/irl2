@@ -16,7 +16,6 @@ Rails.application.routes.draw do
       member do
         post :upvote
         delete :remove_upvote
-        delete 'remove_media/:media_id', to: 'submissions#remove_media', as: 'remove_media'
       end
     end
     resources :comments, only: [:create, :destroy]
