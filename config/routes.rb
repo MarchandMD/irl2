@@ -12,10 +12,11 @@ Rails.application.routes.draw do
       post :bookmark
       delete :remove_bookmark
     end
-    resources :submissions, only: [:create] do
+    resources :submissions, only: [:create, :edit, :update] do
       member do
         post :upvote
         delete :remove_upvote
+        delete 'remove_media/:media_id', to: 'submissions#remove_media', as: 'remove_media'
       end
     end
     resources :comments, only: [:create, :destroy]

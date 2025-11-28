@@ -250,6 +250,12 @@
                 <span>💬</span>
                 <span><%= submission.comments_count %></span>
               </button>
+              <% if user_signed_in? && submission.user == current_user %>
+                <%= link_to edit_task_submission_path(@task, submission), class: "flex items-center gap-2 px-4 py-2 border border-blue-500 dark:border-blue-400 text-blue-600 dark:text-blue-400 text-sm font-bold rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 transition" do %>
+                  <span>✏️</span>
+                  <span>Edit</span>
+                <% end %>
+              <% end %>
             </div>
             <!-- Comments Section for Submission -->
             <% if submission.comments.any? %>
