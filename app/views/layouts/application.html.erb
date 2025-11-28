@@ -112,9 +112,9 @@
       function handleNavScroll() {
         const nav = document.getElementById('mainNav');
         if (!nav) return;
-        
+
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
+
         if (scrollTop > 50) {
           nav.classList.remove('py-4');
           nav.classList.add('py-2');
@@ -122,7 +122,7 @@
           nav.classList.remove('py-2');
           nav.classList.add('py-4');
         }
-        
+
         lastScrollTop = scrollTop;
       }
 
