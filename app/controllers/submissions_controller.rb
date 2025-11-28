@@ -3,6 +3,10 @@ class SubmissionsController < ApplicationController
   before_action :set_task, only: [:create]
   before_action :set_submission, only: [:upvote, :remove_upvote]
 
+  def index
+    @submissions = UserTask.includes(:user, :task).order(created_at: :desc)
+  end
+
   def create
     @user_task = @task.user_tasks.find_or_initialize_by(user: current_user)
 

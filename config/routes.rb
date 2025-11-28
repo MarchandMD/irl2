@@ -20,7 +20,7 @@ Rails.application.routes.draw do
     end
     resources :comments, only: [:create, :destroy]
   end
-  resources :submissions, only: [] do
+  resources :submissions, only: [:index] do
     resources :comments, only: [:create, :destroy]
   end
   resources :groups, only: [:index]
