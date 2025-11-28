@@ -1,12 +1,12 @@
 <div class="w-full">
   <!-- Header Section -->
   <div class="mb-8">
-    <h1 class="text-4xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-2">Community</h1>
+    <h1 class="text-4xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-2">Users</h1>
     <p class="text-gray-700 dark:text-gray-300 text-lg">Meet the explorers, creators, and adventurers</p>
   </div>
 
   <!-- Stats & Filter Bar -->
-  <div class="mb-8 grid md:grid-cols-4 gap-4">
+  <div class="mb-8 grid md:grid-cols-3 gap-4">
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
       <div class="text-3xl font-black text-emerald-700 dark:text-emerald-300"><%= @users.count %></div>
       <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Total Members</div>
@@ -18,10 +18,6 @@
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
       <div class="text-3xl font-black text-purple-700 dark:text-purple-300"><%= Task.count %></div>
       <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Tasks Created</div>
-    </div>
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
-      <div class="text-3xl font-black text-orange-700 dark:text-orange-300"><%= Task.where(status: 'completed').count %></div>
-      <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Completed</div>
     </div>
   </div>
 
@@ -103,8 +99,8 @@
         <!-- Avatar & Name -->
         <div class="flex items-start gap-4 mb-3">
           <% if user.profile_photo.attached? %>
-            <%= image_tag user.profile_photo.variant(resize_to_limit: [64, 64]),
-                class: "flex-shrink-0 w-16 h-16 rounded-full object-cover shadow-lg ring-2 ring-#{group_color[:bg]}-300 dark:ring-#{group_color[:bg]}-600" %>
+            <% avatar_classes = "flex-shrink-0 w-16 h-16 rounded-full object-cover shadow-lg ring-2 ring-#{group_color[:bg]}-300 dark:ring-#{group_color[:bg]}-600" %>
+            <%= image_tag user.profile_photo, class: avatar_classes %>
           <% else %>
             <div class="flex-shrink-0 w-16 h-16 bg-<%= group_color[:avatar_light] %> dark:bg-<%= group_color[:avatar_dark] %> rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-2 ring-<%= group_color[:bg] %>-300 dark:ring-<%= group_color[:bg] %>-600">
               <%= user.email[0].upcase %>
@@ -124,7 +120,7 @@
         <div class="grid grid-cols-3 gap-3 mb-4 pt-4 border-t-2 border-gray-300 dark:border-gray-600">
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.count %></div>
-            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks</div>
+            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Created</div>
           </div>
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:upvotes_count) %></div>
@@ -132,7 +128,7 @@
           </div>
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:submissions_count) %></div>
-            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Submissions</div>
+            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Completed</div>
           </div>
         </div>
 
@@ -165,8 +161,8 @@
         <div class="flex items-center gap-4">
           <!-- Avatar -->
           <% if user.profile_photo.attached? %>
-            <%= image_tag user.profile_photo.variant(resize_to_limit: [48, 48]),
-                class: "flex-shrink-0 w-12 h-12 rounded-full object-cover shadow ring-2 ring-#{group_color[:bg]}-300 dark:ring-#{group_color[:bg]}-600" %>
+            <% avatar_classes = "flex-shrink-0 w-12 h-12 rounded-full object-cover shadow ring-2 ring-#{group_color[:bg]}-300 dark:ring-#{group_color[:bg]}-600" %>
+            <%= image_tag user.profile_photo, class: avatar_classes %>
           <% else %>
             <div class="flex-shrink-0 w-12 h-12 bg-<%= group_color[:avatar_light] %> dark:bg-<%= group_color[:avatar_dark] %> rounded-full flex items-center justify-center text-white text-xl font-bold shadow ring-2 ring-<%= group_color[:bg] %>-300 dark:ring-<%= group_color[:bg] %>-600">
               <%= user.email[0].upcase %>
@@ -194,7 +190,7 @@
           <div class="hidden md:flex items-center gap-6 px-4">
             <div class="text-center">
               <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.count %></div>
-              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks</div>
+              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Created</div>
             </div>
             <div class="text-center">
               <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:upvotes_count) %></div>
@@ -202,7 +198,7 @@
             </div>
             <div class="text-center">
               <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:submissions_count) %></div>
-              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Submissions</div>
+              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Completed</div>
             </div>
           </div>
 
