@@ -50,7 +50,7 @@ group :development, :test do
   gem "brakeman", require: false
 
   # RSpec testing framework
-  gem "rspec-rails", "~> 7.0"
+  gem "rspec-rails", "~> 8.0"
 end
 
 group :development do
