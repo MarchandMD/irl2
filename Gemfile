@@ -66,6 +66,6 @@ gem "faker", "~> 3.5"
 
 gem "factory_bot_rails", "~> 6.5", groups: [:development, :test]
 
-gem "standard", "~> 1.52"
+gem "standard", "~> 1.53"
 
 gem "rubocop", "~> 1.81"
