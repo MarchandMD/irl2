@@ -12,7 +12,7 @@ Rails.application.routes.draw do
       post :bookmark
       delete :remove_bookmark
     end
-    resources :submissions, only: [:create] do
+    resources :submissions, only: [:create, :edit, :update] do
       member do
         post :upvote
         delete :remove_upvote
@@ -20,7 +20,7 @@ Rails.application.routes.draw do
     end
     resources :comments, only: [:create, :destroy]
   end
-  resources :submissions, only: [] do
+  resources :submissions, only: [:index] do
     resources :comments, only: [:create, :destroy]
   end
   resources :groups, only: [:index]
