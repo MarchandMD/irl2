@@ -102,4 +102,4 @@ class SubmissionsController < ApplicationController
   def submission_params
     params.require(:user_task).permit(:submission_text, submission_media: [])
   end
- end
+end
