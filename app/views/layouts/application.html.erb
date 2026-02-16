@@ -23,8 +23,8 @@
     </script>
   </head>
   <body class="bg-white dark:bg-gray-950 text-black dark:text-white transition-colors">
-    <header class="bg-gray-900 dark:bg-gray-950 border-b border-gray-800 dark:border-gray-900">
-      <nav class="container mx-auto px-5 py-4 flex items-center justify-between">
+    <header id="mainHeader" class="fixed top-0 left-0 right-0 bg-gray-900 dark:bg-gray-950 border-b border-gray-800 dark:border-gray-900 z-50 transition-all duration-300">
+      <nav id="mainNav" class="container mx-auto px-5 py-4 flex items-center justify-between transition-all duration-300">
         <div class="flex items-center space-x-4">
           <a href="/" class="font-black text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 hover:from-blue-300 hover:to-emerald-300 transition">IRL2</a>
         </div>
@@ -33,6 +33,7 @@
           <a href="/users" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Users</a>
           <a href="/tasks" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Tasks</a>
           <a href="/groups" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Groups</a>
+          <a href="/submissions" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Submissions</a>
           <a href="/about" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">About</a>
           <button id="darkModeToggle" class="px-3 py-2 text-gray-300 hover:text-white transition text-xl" aria-label="Toggle dark mode">
             <span class="dark:hidden">🌙</span>
@@ -106,8 +107,33 @@
 
       // Re-initialize after Turbo Drive navigation
       document.addEventListener('turbo:load', initializeHeaderControls);
+
+      // Handle scroll for sticky nav
+      let lastScrollTop = 0;
+      function handleNavScroll() {
+        const nav = document.getElementById('mainNav');
+        if (!nav) return;
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > 50) {
+          nav.classList.remove('py-4');
+          nav.classList.add('py-2');
+        } else {
+          nav.classList.remove('py-2');
+          nav.classList.add('py-4');
+        }
+
+        lastScrollTop = scrollTop;
+      }
+
+      // Initialize scroll handler
+      window.addEventListener('scroll', handleNavScroll);
+      document.addEventListener('turbo:load', () => {
+        handleNavScroll(); // Check initial state
+      });
     </script>
-    <main class="container mx-auto mt-8 px-5">
+    <main class="container mx-auto mt-28 px-5">
       <% if notice.present? %>
         <div class="mb-6 max-w-4xl mx-auto">
           <div class="p-4 bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 border-l-4 border-emerald-500 rounded-lg shadow-md">

@@ -1,12 +1,12 @@
 <div class="w-full">
   <!-- Header Section -->
   <div class="mb-8">
-    <h1 class="text-4xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-2">Community</h1>
+    <h1 class="text-4xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-2">Users</h1>
     <p class="text-gray-700 dark:text-gray-300 text-lg">Meet the explorers, creators, and adventurers</p>
   </div>
 
   <!-- Stats & Filter Bar -->
-  <div class="mb-8 grid md:grid-cols-4 gap-4">
+  <div class="mb-8 grid md:grid-cols-3 gap-4">
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
       <div class="text-3xl font-black text-emerald-700 dark:text-emerald-300"><%= @users.count %></div>
       <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Total Members</div>
@@ -19,15 +19,30 @@
       <div class="text-3xl font-black text-purple-700 dark:text-purple-300"><%= Task.count %></div>
       <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Tasks Created</div>
     </div>
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
-      <div class="text-3xl font-black text-orange-700 dark:text-orange-300"><%= Task.where(status: 'completed').count %></div>
-      <div class="text-sm text-gray-700 dark:text-gray-300 uppercase tracking-wide font-semibold">Completed</div>
-    </div>
   </div>
 
-  <!-- Group Filter Pills -->
-  <div class="mb-6 flex flex-wrap items-center gap-3">
-    <span class="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wide">Groups:</span>
+  <!-- View Toggle & Group Filter Section -->
+  <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <!-- View Toggle Buttons -->
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wide">View:</span>
+      <button id="cardViewBtn" class="view-toggle-btn px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-semibold text-sm rounded-full transition hover:bg-gray-400 dark:hover:bg-gray-600">
+        <svg class="inline-block w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zM11 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM11 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>
+        </svg>
+        Cards
+      </button>
+      <button id="listViewBtn" class="view-toggle-btn active px-4 py-2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-bold text-sm rounded-full transition hover:opacity-80">
+        <svg class="inline-block w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+        </svg>
+        List
+      </button>
+    </div>
+
+    <!-- Group Filter Pills -->
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wide">Groups:</span>
     <%= link_to users_path, class: "group-filter-btn #{params[:group].blank? ? 'active bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-bold' : 'bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold'} px-4 py-2 text-sm rounded-full transition" do %>
       All
     <% end %>
@@ -36,10 +51,11 @@
         <%= group %>
       <% end %>
     <% end %>
+    </div>
   </div>
 
-  <!-- Users Grid -->
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <!-- Users Card View -->
+  <div id="cardView" class="hidden grid md:grid-cols-2 lg:grid-cols-3 gap-6">
     <% @users.each_with_index do |user, index| %>
       <%
         # Cycle through colors for variety
@@ -83,8 +99,8 @@
         <!-- Avatar & Name -->
         <div class="flex items-start gap-4 mb-3">
           <% if user.profile_photo.attached? %>
-            <%= image_tag user.profile_photo.variant(resize_to_limit: [64, 64]),
-                class: "flex-shrink-0 w-16 h-16 rounded-full object-cover shadow-lg ring-2 ring-#{group_color[:bg]}-300 dark:ring-#{group_color[:bg]}-600" %>
+            <% avatar_classes = "flex-shrink-0 w-16 h-16 rounded-full object-cover shadow-lg ring-2 ring-#{group_color[:bg]}-300 dark:ring-#{group_color[:bg]}-600" %>
+            <%= image_tag user.profile_photo, class: avatar_classes %>
           <% else %>
             <div class="flex-shrink-0 w-16 h-16 bg-<%= group_color[:avatar_light] %> dark:bg-<%= group_color[:avatar_dark] %> rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-2 ring-<%= group_color[:bg] %>-300 dark:ring-<%= group_color[:bg] %>-600">
               <%= user.email[0].upcase %>
@@ -104,7 +120,7 @@
         <div class="grid grid-cols-3 gap-3 mb-4 pt-4 border-t-2 border-gray-300 dark:border-gray-600">
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.count %></div>
-            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks</div>
+            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Created</div>
           </div>
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:upvotes_count) %></div>
@@ -112,7 +128,7 @@
           </div>
           <div class="text-center">
             <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:submissions_count) %></div>
-            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Submissions</div>
+            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Completed</div>
           </div>
         </div>
 
@@ -121,6 +137,74 @@
           <span class="font-medium">Joined <%= time_ago_in_words(user.created_at) %> ago</span>
           <%= link_to user_path(user), class: "text-emerald-700 dark:text-emerald-300 hover:underline font-semibold" do %>
             View Profile →
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Users List View -->
+  <div id="listView" class="space-y-3">
+    <% @users.each do |user| %>
+      <%
+        group_colors = {
+          'Urban Nomads' => { bg: 'emerald', text: 'emerald', avatar_light: 'emerald-500', avatar_dark: 'emerald-500' },
+          'Digital Alchemists' => { bg: 'purple', text: 'purple', avatar_light: 'purple-500', avatar_dark: 'purple-500' },
+          'Street Philosophers' => { bg: 'blue', text: 'blue', avatar_light: 'blue-500', avatar_dark: 'blue-500' },
+          'Midnight Architects' => { bg: 'indigo', text: 'indigo', avatar_light: 'gray-900', avatar_dark: 'indigo-700' },
+          'Concrete Poets' => { bg: 'orange', text: 'orange', avatar_light: 'orange-500', avatar_dark: 'orange-500' }
+        }
+        group_color = group_colors[user.group] || { bg: 'gray', text: 'gray', avatar_light: 'gray-500', avatar_dark: 'gray-500' }
+      %>
+
+      <div class="user-list-item bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg p-4 hover:shadow-md hover:border-gray-400 dark:hover:border-gray-500 transition" data-user-group="<%= user.group %>">
+        <div class="flex items-center gap-4">
+          <!-- Avatar -->
+          <% if user.profile_photo.attached? %>
+            <% avatar_classes = "flex-shrink-0 w-12 h-12 rounded-full object-cover shadow ring-2 ring-#{group_color[:bg]}-300 dark:ring-#{group_color[:bg]}-600" %>
+            <%= image_tag user.profile_photo, class: avatar_classes %>
+          <% else %>
+            <div class="flex-shrink-0 w-12 h-12 bg-<%= group_color[:avatar_light] %> dark:bg-<%= group_color[:avatar_dark] %> rounded-full flex items-center justify-center text-white text-xl font-bold shadow ring-2 ring-<%= group_color[:bg] %>-300 dark:ring-<%= group_color[:bg] %>-600">
+              <%= user.email[0].upcase %>
+            </div>
+          <% end %>
+
+          <!-- User Info -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-1">
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white truncate">
+                <%= user.email.split('@').first %>
+              </h3>
+              <% if user.group.present? %>
+                <span class="px-2 py-1 bg-<%= group_color[:bg] %>-100 dark:bg-<%= group_color[:bg] %>-900/50 text-<%= group_color[:text] %>-800 dark:text-<%= group_color[:text] %>-200 text-xs font-bold uppercase rounded-full border border-<%= group_color[:bg] %>-300 dark:border-<%= group_color[:bg] %>-700">
+                  <%= user.group %>
+                </span>
+              <% end %>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Joined <%= time_ago_in_words(user.created_at) %> ago
+            </p>
+          </div>
+
+          <!-- Stats -->
+          <div class="hidden md:flex items-center gap-6 px-4">
+            <div class="text-center">
+              <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.count %></div>
+              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Created</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:upvotes_count) %></div>
+              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Upvotes</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:submissions_count) %></div>
+              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Completed</div>
+            </div>
+          </div>
+
+          <!-- View Profile Link -->
+          <%= link_to user_path(user), class: "flex-shrink-0 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-lg transition" do %>
+            View Profile
           <% end %>
         </div>
       </div>
@@ -139,6 +223,47 @@
       Next
     </button>
   </div>
-
-
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const cardViewBtn = document.getElementById('cardViewBtn');
+    const listViewBtn = document.getElementById('listViewBtn');
+    const cardView = document.getElementById('cardView');
+    const listView = document.getElementById('listView');
+
+    // Load saved preference from localStorage
+    const savedView = localStorage.getItem('usersViewPreference') || 'list';
+    if (savedView === 'card') {
+      showCardView();
+    }
+
+    cardViewBtn.addEventListener('click', function() {
+      showCardView();
+      localStorage.setItem('usersViewPreference', 'card');
+    });
+
+    listViewBtn.addEventListener('click', function() {
+      showListView();
+      localStorage.setItem('usersViewPreference', 'list');
+    });
+
+    function showCardView() {
+      cardView.classList.remove('hidden');
+      listView.classList.add('hidden');
+      cardViewBtn.classList.add('active', 'bg-gray-900', 'dark:bg-gray-100', 'text-white', 'dark:text-gray-900', 'font-bold');
+      cardViewBtn.classList.remove('bg-gray-300', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'font-semibold');
+      listViewBtn.classList.remove('active', 'bg-gray-900', 'dark:bg-gray-100', 'text-white', 'dark:text-gray-900', 'font-bold');
+      listViewBtn.classList.add('bg-gray-300', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'font-semibold');
+    }
+
+    function showListView() {
+      cardView.classList.add('hidden');
+      listView.classList.remove('hidden');
+      listViewBtn.classList.add('active', 'bg-gray-900', 'dark:bg-gray-100', 'text-white', 'dark:text-gray-900', 'font-bold');
+      listViewBtn.classList.remove('bg-gray-300', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'font-semibold');
+      cardViewBtn.classList.remove('active', 'bg-gray-900', 'dark:bg-gray-100', 'text-white', 'dark:text-gray-900', 'font-bold');
+      cardViewBtn.classList.add('bg-gray-300', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'font-semibold');
+    }
+  });
+</script>
