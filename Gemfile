@@ -60,7 +60,7 @@ end
 
 gem "tidewave", "~> 0.4.1", group: :development
 
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 
 gem "faker", "~> 3.5"
 
