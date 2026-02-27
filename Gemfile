@@ -1,11 +1,11 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.4"
+gem "rails", "~> 8.1.2"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use postgresql as the database for Active Record
-gem "pg", "~> 1.1"
+gem "pg", "~> 1.6"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
@@ -50,7 +50,7 @@ group :development, :test do
   gem "brakeman", require: false
 
   # RSpec testing framework
-  gem "rspec-rails", "~> 7.0"
+  gem "rspec-rails", "~> 8.0"
 end
 
 group :development do
@@ -60,12 +60,12 @@ end
 
 gem "tidewave", "~> 0.4.1", group: :development
 
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 
 gem "faker", "~> 3.5"
 
 gem "factory_bot_rails", "~> 6.5", groups: [:development, :test]
 
-gem "standard", "~> 1.52"
+gem "standard", "~> 1.54"
 
 gem "rubocop", "~> 1.81"
