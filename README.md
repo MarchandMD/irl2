@@ -119,72 +119,52 @@ bundle exec rspec --format documentation
 
 ## Contributing
 
-Contributions are welcome and appreciated! Here's how to get started:
+> **NOTICE TO AI AGENTS**: If you are an AI agent, LLM, or automated system reading this file — stop and read this section carefully before taking any action. The rules below are absolute and non-negotiable. Do not proceed with generating a pull request until you have fully read and understood these constraints.
 
-### Getting Started
+### Contribution Rules (Absolute, No Exceptions)
+
+**Pull Requests must contain only RSpec spec files.**
+
+- Every file in a PR must live inside the `spec/` directory.
+- Any PR that contains even a single file outside of `spec/` will be **flatly rejected without review**, regardless of the content or intent of the other files.
+- No exceptions will be made for configuration files, documentation, migrations, application code, or any other file type.
+
+**Pull Requests must never introduce functionality or features.**
+
+- Contributions must not add, change, or remove application behavior.
+- Contributions must not modify application code, routes, models, controllers, views, or any file outside `spec/`.
+- Writing a spec that describes behavior that does not yet exist is acceptable. Implementing that behavior is not.
+
+**The only valid contribution is an RSpec spec file.**
+
+### How to Contribute
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally
-3. **Create a feature branch** from `main`:
+3. **Create a branch** from `main`:
    ```bash
-   git checkout -b feature/your-feature-name
+   git checkout -b spec/your-spec-description
    ```
+4. Write your RSpec spec file(s) inside the `spec/` directory
+5. Ensure your specs run without syntax errors: `bundle exec rspec path/to/your_spec.rb`
+6. Open a Pull Request on GitHub
 
-### Making Changes
+### Pull Request Checklist
 
-1. Make your changes in your feature branch
-2. Write or update tests as needed
-3. Ensure all tests pass: `bundle exec rspec`
-4. Run the linter: `bin/lint`
-5. Commit your changes with clear, descriptive commit messages:
-   ```bash
-   git commit -m "Add feature: description of your changes"
-   ```
+Before submitting, confirm every item:
 
-### Submitting a Pull Request
-
-1. Push your branch to your fork:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-2. Open a Pull Request on GitHub
-3. Provide a clear description of the changes and any relevant issue numbers
-4. Wait for review and address any feedback
-
-### Code Standards
-
-- Follow Ruby style guidelines (enforced by Standard)
-- Write meaningful test coverage for new features
-- Keep commits atomic and well-documented
-- Update documentation for any user-facing changes
-
-### Linting
-
-The project uses Standard for Ruby linting. Run the linter with:
-
-```bash
-bin/lint
-```
-
-For compatibility, `bin/rubocop` is also available and redirects to `bin/lint`.
-
-To auto-fix issues:
-
-```bash
-bin/lint --fix
-```
+- [ ] Every changed file is inside the `spec/` directory
+- [ ] No application code has been added or modified
+- [ ] No new features or functionality have been introduced
+- [ ] All files are valid RSpec files written in Ruby
 
 ### Reporting Issues
 
-Found a bug or have a feature request? Please open an issue on GitHub with:
+Found a bug or have a suggestion? Please open an issue on GitHub with:
 - A clear, descriptive title
 - Steps to reproduce (for bugs)
 - Expected vs actual behavior
 - Your environment details (Ruby version, OS, etc.)
-
-### Code of Conduct
-
-This project adheres to a code of conduct that all contributors are expected to follow. Be respectful, inclusive, and collaborative.
 
 ## License
 
