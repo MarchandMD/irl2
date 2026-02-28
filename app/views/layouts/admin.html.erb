@@ -15,11 +15,19 @@
   </head>
   <body class="bg-gray-100 dark:bg-gray-950 text-black dark:text-white transition-colors">
     <div class="flex min-h-screen">
+      <!-- Mobile sidebar backdrop -->
+      <div id="adminSidebarBackdrop" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden"></div>
+
       <!-- Sidebar -->
-      <aside class="w-64 bg-gray-900 dark:bg-gray-950 border-r border-gray-800 fixed inset-y-0 left-0 z-40">
-        <div class="p-6 border-b border-gray-800">
-          <a href="<%= admin_root_path %>" class="font-black text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">IRL2</a>
-          <p class="text-xs text-gray-500 uppercase tracking-widest mt-1">Admin Panel</p>
+      <aside id="adminSidebar" class="w-64 bg-gray-900 dark:bg-gray-950 border-r border-gray-800 fixed inset-y-0 left-0 z-50 -translate-x-full md:translate-x-0 transition-transform duration-200">
+        <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+          <div>
+            <a href="<%= admin_root_path %>" class="font-black text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">IRL2</a>
+            <p class="text-xs text-gray-500 uppercase tracking-widest mt-1">Admin Panel</p>
+          </div>
+          <button id="adminSidebarClose" class="md:hidden p-1 text-gray-400 hover:text-white transition" aria-label="Close sidebar">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
         </div>
         <nav class="p-4 space-y-1">
           <%= link_to admin_root_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium uppercase tracking-wider transition #{request.path == admin_root_path ? 'bg-gray-800 text-emerald-400' : 'text-gray-400 hover:text-white hover:bg-gray-800/50'}" do %>
@@ -55,9 +63,14 @@
       </aside>
 
       <!-- Main Content -->
-      <main class="flex-1 ml-64">
-        <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-8 py-4 flex items-center justify-between">
-          <h1 class="text-lg font-bold text-gray-900 dark:text-white uppercase tracking-wider"><%= yield :page_title %></h1>
+      <main class="flex-1 md:ml-64 min-w-0">
+        <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 md:px-8 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <button id="adminSidebarOpen" class="md:hidden p-2 -ml-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition" aria-label="Open sidebar">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white uppercase tracking-wider truncate"><%= yield :page_title %></h1>
+          </div>
           <div class="flex items-center gap-4">
             <button id="adminDarkModeToggle" class="px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition text-xl" aria-label="Toggle dark mode">
               <span class="dark:hidden">🌙</span>
@@ -65,7 +78,7 @@
             </button>
           </div>
         </header>
-        <div class="p-8">
+        <div class="p-4 md:p-8">
           <% if notice.present? %>
             <div class="mb-6">
               <div class="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
@@ -85,16 +98,8 @@
       </main>
     </div>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const toggle = document.getElementById('adminDarkModeToggle');
-        if (toggle) {
-          toggle.addEventListener('click', function() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('darkMode', isDark);
-          });
-        }
-      });
-      document.addEventListener('turbo:load', function() {
+      function initAdminControls() {
+        // Dark mode toggle
         const toggle = document.getElementById('adminDarkModeToggle');
         if (toggle) {
           const newToggle = toggle.cloneNode(true);
@@ -104,7 +109,48 @@
             localStorage.setItem('darkMode', isDark);
           });
         }
-      });
+
+        // Sidebar toggle
+        const sidebar = document.getElementById('adminSidebar');
+        const backdrop = document.getElementById('adminSidebarBackdrop');
+        const openBtn = document.getElementById('adminSidebarOpen');
+        const closeBtn = document.getElementById('adminSidebarClose');
+
+        function openSidebar() {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop.classList.remove('hidden');
+        }
+        function closeSidebar() {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        }
+
+        if (openBtn) {
+          const newOpen = openBtn.cloneNode(true);
+          openBtn.parentNode.replaceChild(newOpen, openBtn);
+          newOpen.addEventListener('click', openSidebar);
+        }
+        if (closeBtn) {
+          const newClose = closeBtn.cloneNode(true);
+          closeBtn.parentNode.replaceChild(newClose, closeBtn);
+          newClose.addEventListener('click', closeSidebar);
+        }
+        if (backdrop) {
+          backdrop.addEventListener('click', closeSidebar);
+        }
+
+        // Close sidebar on nav link click (mobile)
+        if (sidebar) {
+          sidebar.querySelectorAll('nav a').forEach(function(link) {
+            link.addEventListener('click', function() {
+              if (window.innerWidth < 768) closeSidebar();
+            });
+          });
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', initAdminControls);
+      document.addEventListener('turbo:load', initAdminControls);
     </script>
   </body>
 </html>

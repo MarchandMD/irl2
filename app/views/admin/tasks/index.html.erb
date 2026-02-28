@@ -1,11 +1,11 @@
 <% content_for(:page_title, "Tasks") %>
 
 <!-- Header -->
-<div class="flex items-center justify-between mb-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
   <div>
     <p class="text-sm text-gray-500 dark:text-gray-400"><%= @tasks.count %> tasks</p>
   </div>
-  <div class="flex items-center gap-3">
+  <div class="flex flex-wrap items-center gap-3">
     <% if params[:filter] == "archived" %>
       <%= link_to "Active Tasks", admin_tasks_path, class: "px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-800 transition rounded-lg" %>
     <% else %>
@@ -17,7 +17,7 @@
 
 <!-- Filters -->
 <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 mb-6">
-  <%= form_with url: admin_tasks_path, method: :get, class: "flex items-center gap-4", data: { turbo: false } do |f| %>
+  <%= form_with url: admin_tasks_path, method: :get, class: "flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4", data: { turbo: false } do |f| %>
     <% if params[:filter].present? %>
       <%= f.hidden_field :filter, value: params[:filter] %>
     <% end %>
@@ -35,7 +35,7 @@
 </div>
 
 <!-- Bulk Action Bar -->
-<div id="bulkActionBar" class="hidden bg-gray-900 dark:bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6 flex items-center justify-between">
+<div id="bulkActionBar" class="hidden bg-gray-900 dark:bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
   <div class="flex items-center gap-3">
     <span class="text-sm font-bold text-white"><span id="selectedCount">0</span> task(s) selected</span>
   </div>
@@ -50,8 +50,8 @@
 </div>
 
 <!-- Tasks Table -->
-<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
-  <table class="w-full">
+<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden overflow-x-auto">
+  <table class="w-full min-w-[700px]">
     <thead>
       <tr class="border-b border-gray-200 dark:border-gray-800">
         <th class="px-4 py-3 text-center w-10">

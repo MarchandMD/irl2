@@ -1,11 +1,11 @@
 <% content_for(:page_title, "Users") %>
 
 <!-- Header -->
-<div class="flex items-center justify-between mb-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
   <div>
     <p class="text-sm text-gray-500 dark:text-gray-400"><%= @users.count %> users</p>
   </div>
-  <div class="flex items-center gap-3">
+  <div class="flex flex-wrap items-center gap-3">
     <% if params[:filter] == "archived" %>
       <%= link_to "Active Users", admin_users_path, class: "px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-800 transition rounded-lg" %>
     <% else %>
@@ -16,7 +16,7 @@
 
 <!-- Search -->
 <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 mb-6">
-  <%= form_with url: admin_users_path, method: :get, class: "flex items-center gap-4", data: { turbo: false } do |f| %>
+  <%= form_with url: admin_users_path, method: :get, class: "flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4", data: { turbo: false } do |f| %>
     <div class="flex-1">
       <%= f.text_field :search, value: params[:search], placeholder: "Search by email...", class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" %>
     </div>
@@ -28,7 +28,7 @@
 </div>
 
 <!-- Bulk Action Bar (hidden by default, shown via JS when checkboxes are selected) -->
-<div id="bulkActionBar" class="hidden bg-gray-900 dark:bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6 flex items-center justify-between">
+<div id="bulkActionBar" class="hidden bg-gray-900 dark:bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
   <div class="flex items-center gap-3">
     <span class="text-sm font-bold text-white"><span id="selectedCount">0</span> user(s) selected</span>
   </div>
@@ -43,8 +43,8 @@
 </div>
 
 <!-- Users Table -->
-<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
-  <table class="w-full">
+<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden overflow-x-auto">
+  <table class="w-full min-w-[700px]">
     <thead>
       <tr class="border-b border-gray-200 dark:border-gray-800">
         <th class="px-4 py-3 text-center w-10">
