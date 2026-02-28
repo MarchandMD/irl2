@@ -25,10 +25,13 @@
   <body class="bg-white dark:bg-gray-950 text-black dark:text-white transition-colors">
     <header id="mainHeader" class="fixed top-0 left-0 right-0 bg-gray-900 dark:bg-gray-950 border-b border-gray-800 dark:border-gray-900 z-50 transition-all duration-300">
       <nav id="mainNav" class="container mx-auto px-5 py-4 flex items-center justify-between transition-all duration-300">
+        <!-- Logo -->
         <div class="flex items-center space-x-4">
           <a href="/" class="font-black text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 hover:from-blue-300 hover:to-emerald-300 transition">IRL2</a>
         </div>
-        <div class="flex items-center space-x-6">
+
+        <!-- Desktop nav (hidden on mobile) -->
+        <div class="hidden md:flex items-center space-x-6">
           <a href="/" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Home</a>
           <a href="/users" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Users</a>
           <a href="/tasks" class="text-gray-300 hover:text-white font-medium uppercase tracking-wider text-sm transition">Tasks</a>
@@ -67,27 +70,126 @@
             <a href="/users/sign_up" class="px-4 py-2 bg-emerald-500 text-black font-bold text-xs uppercase tracking-wider hover:bg-emerald-400 transition rounded">Join</a>
           <% end %>
         </div>
+
+        <!-- Mobile: dark mode + hamburger -->
+        <div class="flex items-center gap-2 md:hidden">
+          <button id="darkModeToggleMobile" class="px-3 py-2 text-gray-300 hover:text-white transition text-xl" aria-label="Toggle dark mode">
+            <span class="dark:hidden">🌙</span>
+            <span class="hidden dark:inline">☀️</span>
+          </button>
+          <button id="hamburgerBtn" class="p-2 text-gray-300 hover:text-white transition" aria-label="Open menu">
+            <svg id="hamburgerIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
       </nav>
+
+      <!-- Mobile menu panel -->
+      <div id="mobileMenu" class="hidden md:hidden border-t border-gray-800 dark:border-gray-900 bg-gray-900 dark:bg-gray-950">
+        <div class="container mx-auto px-5 py-4 flex flex-col space-y-1">
+          <a href="/" class="block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition">Home</a>
+          <a href="/users" class="block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition">Users</a>
+          <a href="/tasks" class="block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition">Tasks</a>
+          <a href="/groups" class="block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition">Groups</a>
+          <a href="/submissions" class="block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition">Submissions</a>
+          <a href="/about" class="block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition">About</a>
+          <div class="border-t border-gray-800 dark:border-gray-900 pt-3 mt-2">
+            <% if user_signed_in? %>
+              <div class="flex items-center gap-3 px-3 py-3">
+                <% if current_user.profile_photo.attached? %>
+                  <%= image_tag current_user.profile_photo, class: "w-8 h-8 rounded-full object-cover border-2 border-emerald-400" %>
+                <% else %>
+                  <span class="text-emerald-400 text-lg">👤</span>
+                <% end %>
+                <span class="text-white font-medium text-sm"><%= current_user.email.split('@').first %></span>
+              </div>
+              <%= link_to "Profile", user_path(current_user), class: "block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition" %>
+              <%= link_to "Settings", edit_user_registration_path, class: "block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition" %>
+              <% if current_user.admin? %>
+                <%= link_to "Admin", admin_root_path, class: "block px-3 py-3 text-emerald-400 hover:text-emerald-300 hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition" %>
+              <% end %>
+              <%= button_to "Log Out", destroy_user_session_path, method: :delete, class: "w-full text-left px-3 py-3 text-red-400 hover:text-red-300 hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition", form: { data: { turbo: false } } %>
+            <% else %>
+              <a href="/users/sign_in" class="block px-3 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg font-medium uppercase tracking-wider text-sm transition">Log In</a>
+              <a href="/users/sign_up" class="block px-3 py-3 mt-1 bg-emerald-500 text-black text-center font-bold text-xs uppercase tracking-wider hover:bg-emerald-400 transition rounded-lg">Join</a>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </header>
     <script>
       function initializeHeaderControls() {
+        // Dark mode toggle (desktop)
         const darkModeToggle = document.getElementById('darkModeToggle');
         if (darkModeToggle) {
-          // Remove existing listener by cloning the element
           const newToggle = darkModeToggle.cloneNode(true);
           darkModeToggle.parentNode.replaceChild(newToggle, darkModeToggle);
-
           newToggle.addEventListener('click', function() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('darkMode', isDark);
           });
         }
 
+        // Dark mode toggle (mobile)
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+        if (darkModeToggleMobile) {
+          const newToggleMobile = darkModeToggleMobile.cloneNode(true);
+          darkModeToggleMobile.parentNode.replaceChild(newToggleMobile, darkModeToggleMobile);
+          newToggleMobile.addEventListener('click', function() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', isDark);
+          });
+        }
+
+        // Hamburger menu
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const hamburgerIcon = document.getElementById('hamburgerIcon');
+        const closeIcon = document.getElementById('closeIcon');
+
+        if (hamburgerBtn && mobileMenu) {
+          const newHamburger = hamburgerBtn.cloneNode(true);
+          hamburgerBtn.parentNode.replaceChild(newHamburger, hamburgerBtn);
+
+          newHamburger.addEventListener('click', function() {
+            const menu = document.getElementById('mobileMenu');
+            const hIcon = document.getElementById('hamburgerIcon');
+            const cIcon = document.getElementById('closeIcon');
+            const isOpen = !menu.classList.contains('hidden');
+
+            if (isOpen) {
+              menu.classList.add('hidden');
+              hIcon.classList.remove('hidden');
+              cIcon.classList.add('hidden');
+            } else {
+              menu.classList.remove('hidden');
+              hIcon.classList.add('hidden');
+              cIcon.classList.remove('hidden');
+            }
+          });
+        }
+
+        // Close mobile menu on link click
+        const mobileMenuEl = document.getElementById('mobileMenu');
+        if (mobileMenuEl) {
+          mobileMenuEl.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', function() {
+              document.getElementById('mobileMenu').classList.add('hidden');
+              document.getElementById('hamburgerIcon').classList.remove('hidden');
+              document.getElementById('closeIcon').classList.add('hidden');
+            });
+          });
+        }
+
+        // Desktop user menu dropdown
         const userMenuButton = document.getElementById('userMenuButton');
         const userMenuDropdown = document.getElementById('userMenuDropdown');
 
         if (userMenuButton && userMenuDropdown) {
-          // Remove existing listener by cloning the element
           const newButton = userMenuButton.cloneNode(true);
           userMenuButton.parentNode.replaceChild(newButton, userMenuButton);
 
