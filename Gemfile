@@ -58,7 +58,7 @@ group :development do
   gem "web-console"
 end
 
-gem "tidewave", "~> 0.4.1", group: :development
+gem "tidewave", "~> 0.4.2", group: :development
 
 gem "devise", "~> 5.0"
 
