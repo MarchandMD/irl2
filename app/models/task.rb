@@ -21,7 +21,9 @@ class Task < ApplicationRecord
   validates :status, presence: true
   validates :recommended_group, inclusion: {in: GROUPS, allow_nil: true}
 
-  # Search scope
+  # Scopes
+  scope :active, -> { where(archived_at: nil) }
+  scope :archived, -> { where.not(archived_at: nil) }
   scope :search, ->(query) {
     return all if query.blank?
 
@@ -32,6 +34,18 @@ class Task < ApplicationRecord
       "%#{sanitize_sql_like(query)}%"
     )
   }
+
+  def archived?
+    archived_at.present?
+  end
+
+  def archive!
+    update!(archived_at: Time.current)
+  end
+
+  def unarchive!
+    update!(archived_at: nil)
+  end
 
   def upvoted_by?(user)
     return false unless user

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_28_042110) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_28_044119) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -64,6 +64,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_28_042110) do
   end
 
   create_table "tasks", force: :cascade do |t|
+    t.datetime "archived_at"
     t.integer "bookmarks_count", default: 0, null: false
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
@@ -108,6 +109,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_28_042110) do
 
   create_table "users", force: :cascade do |t|
     t.boolean "admin"
+    t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false

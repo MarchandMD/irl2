@@ -3,10 +3,21 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :tasks do
       collection do
-        delete :destroy_all
+        post :archive_all
+        post :bulk_archive
+      end
+      member do
+        post :unarchive
       end
     end
-    resources :users
+    resources :users do
+      collection do
+        post :bulk_archive
+      end
+      member do
+        post :unarchive
+      end
+    end
     resources :comments, only: [:index, :destroy]
     resources :submissions, only: [:index, :show, :destroy]
   end

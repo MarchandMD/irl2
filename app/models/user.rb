@@ -15,7 +15,22 @@ class User < ApplicationRecord
   has_many :bookmarked_tasks, through: :bookmarks, source: :task
   has_many :comments, dependent: :destroy
 
+  scope :active, -> { where(archived_at: nil) }
+  scope :archived, -> { where.not(archived_at: nil) }
+
   validate :acceptable_profile_photo
+
+  def archived?
+    archived_at.present?
+  end
+
+  def archive!
+    update!(archived_at: Time.current)
+  end
+
+  def unarchive!
+    update!(archived_at: nil)
+  end
 
   private
 

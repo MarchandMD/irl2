@@ -1,10 +1,15 @@
 module Admin
   class UsersController < BaseController
-    before_action :set_user, only: [:show, :edit, :update, :destroy]
+    before_action :set_user, only: [:show, :edit, :update, :destroy, :unarchive]
 
     def index
       @users = User.order(created_at: :desc)
       @users = @users.where("email ILIKE ?", "%#{params[:search]}%") if params[:search].present?
+      if params[:filter] == "archived"
+        @users = @users.archived
+      else
+        @users = @users.active
+      end
     end
 
     def show
@@ -25,11 +30,33 @@ module Admin
 
     def destroy
       if @user == current_user
-        redirect_to admin_users_path, alert: "You cannot delete yourself."
+        redirect_to admin_users_path, alert: "You cannot archive yourself."
         return
       end
-      @user.destroy
-      redirect_to admin_users_path, notice: "User deleted successfully."
+      @user.archive!
+      redirect_to admin_users_path, notice: "User archived successfully."
+    end
+
+    def unarchive
+      @user.unarchive!
+      redirect_to admin_users_path, notice: "User unarchived successfully."
+    end
+
+    def bulk_archive
+      user_ids = params[:user_ids]&.reject(&:blank?) || []
+      if user_ids.empty?
+        redirect_to admin_users_path, alert: "No users selected."
+        return
+      end
+
+      users = User.where(id: user_ids).where.not(id: current_user.id)
+      archived_count = 0
+      users.find_each do |user|
+        user.archive!
+        archived_count += 1
+      end
+
+      redirect_to admin_users_path, notice: "#{archived_count} #{'user'.pluralize(archived_count)} archived successfully."
     end
 
     private
