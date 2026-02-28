@@ -1,4 +1,16 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    root to: "dashboard#index"
+    resources :tasks do
+      collection do
+        delete :destroy_all
+      end
+    end
+    resources :users
+    resources :comments, only: [:index, :destroy]
+    resources :submissions, only: [:index, :show, :destroy]
+  end
+
   devise_for :users, controllers: {registrations: "users/registrations"}
   devise_scope :user do
     delete "users/registration/remove_profile_photo", to: "users/registrations#remove_profile_photo", as: :remove_profile_photo_user_registration

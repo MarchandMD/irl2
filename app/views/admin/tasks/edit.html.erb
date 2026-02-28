@@ -1,0 +1,66 @@
+<% content_for(:page_title, "Edit Task") %>
+
+<div class="mb-6">
+  <%= link_to "← Back to Task", admin_task_path(@task), class: "text-sm font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-wider" %>
+</div>
+
+<div class="max-w-3xl">
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-8">
+    <%= form_with model: @task, url: admin_task_path(@task), method: :patch, class: "space-y-6" do |f| %>
+
+      <% if @task.errors.any? %>
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <h3 class="text-red-800 dark:text-red-300 font-bold text-sm uppercase tracking-wide mb-2">
+            <%= pluralize(@task.errors.count, "error") %> prevented this task from being saved:
+          </h3>
+          <ul class="list-disc list-inside text-red-700 dark:text-red-400 text-sm space-y-1">
+            <% @task.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <!-- Title -->
+      <div>
+        <%= f.label :title, "Task Title", class: "block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2" %>
+        <%= f.text_field :title, class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" %>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <%= f.label :description, "Description", class: "block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2" %>
+        <%= f.text_area :description, rows: 8, class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition resize-y" %>
+      </div>
+
+      <!-- Status -->
+      <div>
+        <%= f.label :status, "Status", class: "block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2" %>
+        <%= f.select :status, [["Open", "open"], ["In Progress", "in_progress"], ["Completed", "completed"], ["Closed", "closed"]], {}, class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" %>
+      </div>
+
+      <!-- Recommended Group -->
+      <div>
+        <%= f.label :recommended_group, "Recommended Group", class: "block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2" %>
+        <%= f.select :recommended_group,
+            [
+              ["None", ""],
+              ["Urban Nomads", "Urban Nomads"],
+              ["Digital Alchemists", "Digital Alchemists"],
+              ["Street Philosophers", "Street Philosophers"],
+              ["Midnight Architects", "Midnight Architects"],
+              ["Concrete Poets", "Concrete Poets"]
+            ],
+            {},
+            class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+        %>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex items-center gap-4 pt-4">
+        <%= f.submit "Update Task", class: "px-6 py-3 bg-emerald-500 text-black font-bold text-xs uppercase tracking-wider hover:bg-emerald-400 transition rounded-lg cursor-pointer" %>
+        <%= link_to "Cancel", admin_task_path(@task), class: "px-6 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 font-bold text-xs uppercase tracking-wider" %>
+      </div>
+    <% end %>
+  </div>
+</div>

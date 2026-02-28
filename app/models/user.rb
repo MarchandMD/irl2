@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   has_one_attached :profile_photo
 
-  has_many :tasks
+  has_many :tasks, dependent: :destroy
   has_many :upvotes, dependent: :destroy
   has_many :upvoted_tasks, through: :upvotes, source: :task
   has_many :user_tasks, dependent: :destroy

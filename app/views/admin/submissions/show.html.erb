@@ -1,0 +1,65 @@
+<% content_for(:page_title, "Submission Detail") %>
+
+<div class="mb-6">
+  <%= link_to "← Back to Submissions", admin_submissions_path, class: "text-sm font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-wider" %>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <!-- Main Content -->
+  <div class="lg:col-span-2">
+    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Submission Text</h2>
+      <% if @submission.submission_text.present? %>
+        <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap"><%= @submission.submission_text %></p>
+      <% else %>
+        <p class="text-gray-500 italic">No text content.</p>
+      <% end %>
+
+      <% if @submission.submission_media.attached? %>
+        <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mt-6 mb-3">Media</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <% @submission.submission_media.each do |media| %>
+            <% if media.content_type.start_with?("image/") %>
+              <%= image_tag media, class: "rounded-lg border border-gray-200 dark:border-gray-700 w-full object-cover" %>
+            <% else %>
+              <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <p class="text-sm text-gray-600 dark:text-gray-400"><%= media.filename %></p>
+                <p class="text-xs text-gray-500"><%= number_to_human_size(media.byte_size) %></p>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Details</h3>
+      <dl class="space-y-3">
+        <div>
+          <dt class="text-xs font-bold text-gray-500 uppercase tracking-wider">User</dt>
+          <dd class="text-sm mt-1"><%= link_to @submission.user.email, admin_user_path(@submission.user), class: "text-emerald-500 hover:text-emerald-400" %></dd>
+        </div>
+        <div>
+          <dt class="text-xs font-bold text-gray-500 uppercase tracking-wider">Task</dt>
+          <dd class="text-sm mt-1"><%= link_to @submission.task.title, admin_task_path(@submission.task), class: "text-emerald-500 hover:text-emerald-400" %></dd>
+        </div>
+        <div>
+          <dt class="text-xs font-bold text-gray-500 uppercase tracking-wider">Completed</dt>
+          <dd class="text-sm text-gray-900 dark:text-white mt-1"><%= @submission.completed? ? "Yes" : "No" %></dd>
+        </div>
+        <div>
+          <dt class="text-xs font-bold text-gray-500 uppercase tracking-wider">Submitted</dt>
+          <dd class="text-sm text-gray-900 dark:text-white mt-1"><%= @submission.created_at.strftime("%b %d, %Y at %I:%M %p") %></dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 space-y-3">
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Actions</h3>
+      <%= button_to "Delete Submission", admin_submission_path(@submission), method: :delete, class: "w-full px-4 py-2 bg-red-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-red-500 transition rounded-lg", form: { data: { turbo_confirm: "Are you sure you want to delete this submission?" } } %>
+    </div>
+  </div>
+</div>

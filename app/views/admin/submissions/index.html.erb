@@ -1,0 +1,58 @@
+<% content_for(:page_title, "Submissions") %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <p class="text-sm text-gray-500 dark:text-gray-400"><%= @submissions.count %> submissions total</p>
+  </div>
+</div>
+
+<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
+  <table class="w-full">
+    <thead>
+      <tr class="border-b border-gray-200 dark:border-gray-800">
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">User</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Task</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Submission</th>
+        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Completed</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+        <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+      <% @submissions.each do |submission| %>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+          <td class="px-6 py-4">
+            <%= link_to submission.user.email.split('@').first, admin_user_path(submission.user), class: "text-sm font-medium text-gray-900 dark:text-white hover:text-emerald-500 transition" %>
+          </td>
+          <td class="px-6 py-4">
+            <%= link_to submission.task.title.truncate(40), admin_task_path(submission.task), class: "text-sm text-emerald-500 hover:text-emerald-400" %>
+          </td>
+          <td class="px-6 py-4">
+            <p class="text-sm text-gray-600 dark:text-gray-400 max-w-xs truncate"><%= submission.submission_text&.truncate(80) || "Media only" %></p>
+          </td>
+          <td class="px-6 py-4 text-center">
+            <% if submission.completed? %>
+              <span class="text-emerald-500">&#10003;</span>
+            <% else %>
+              <span class="text-gray-400">—</span>
+            <% end %>
+          </td>
+          <td class="px-6 py-4">
+            <p class="text-sm text-gray-500"><%= time_ago_in_words(submission.created_at) %> ago</p>
+          </td>
+          <td class="px-6 py-4 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <%= link_to "View", admin_submission_path(submission), class: "px-3 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 uppercase tracking-wider" %>
+              <%= button_to "Delete", admin_submission_path(submission), method: :delete, class: "px-3 py-1 text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-500 uppercase tracking-wider", form: { data: { turbo_confirm: "Delete this submission?" } } %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+      <% if @submissions.empty? %>
+        <tr>
+          <td colspan="6" class="px-6 py-12 text-center text-gray-500 text-sm">No submissions found.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

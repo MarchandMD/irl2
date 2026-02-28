@@ -10,6 +10,14 @@
 
 require "faker"
 
+# Create admin user
+puts "Creating admin user..."
+admin = User.find_or_create_by!(email: "admin@irl2.com") do |user|
+  user.password = "password"
+  user.password_confirmation = "password"
+end
+admin.update!(admin: true)
+
 # Create users if they don't exist
 puts "Creating users..."
 10.times do

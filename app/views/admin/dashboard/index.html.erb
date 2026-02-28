@@ -1,0 +1,86 @@
+<% content_for(:page_title, "Dashboard") %>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
+    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Total Users</p>
+    <p class="text-3xl font-black text-gray-900 dark:text-white"><%= @total_users %></p>
+  </div>
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
+    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Total Tasks</p>
+    <p class="text-3xl font-black text-gray-900 dark:text-white"><%= @total_tasks %></p>
+  </div>
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
+    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Total Comments</p>
+    <p class="text-3xl font-black text-gray-900 dark:text-white"><%= @total_comments %></p>
+  </div>
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
+    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Total Submissions</p>
+    <p class="text-3xl font-black text-gray-900 dark:text-white"><%= @total_submissions %></p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <!-- Recent Users -->
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+      <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Recent Users</h2>
+      <%= link_to "View All", admin_users_path, class: "text-xs font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-wider" %>
+    </div>
+    <div class="divide-y divide-gray-200 dark:divide-gray-800">
+      <% @recent_users.each do |user| %>
+        <div class="px-6 py-3 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-900 dark:text-white"><%= user.email %></p>
+            <p class="text-xs text-gray-500"><%= user.group || "No group" %> &middot; Joined <%= time_ago_in_words(user.created_at) %> ago</p>
+          </div>
+          <% if user.admin? %>
+            <span class="px-2 py-1 text-xs font-bold bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded uppercase tracking-wider">Admin</span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Recent Tasks -->
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+      <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Recent Tasks</h2>
+      <%= link_to "View All", admin_tasks_path, class: "text-xs font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-wider" %>
+    </div>
+    <div class="divide-y divide-gray-200 dark:divide-gray-800">
+      <% @recent_tasks.each do |task| %>
+        <div class="px-6 py-3 flex items-center justify-between">
+          <div class="min-w-0 flex-1">
+            <%= link_to task.title, admin_task_path(task), class: "text-sm font-medium text-gray-900 dark:text-white hover:text-emerald-500 truncate block" %>
+            <p class="text-xs text-gray-500">by <%= task.user.email.split('@').first %> &middot; <%= time_ago_in_words(task.created_at) %> ago</p>
+          </div>
+          <% status_classes = { 'open' => 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400', 'in_progress' => 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400', 'completed' => 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400', 'closed' => 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' } %>
+          <span class="ml-3 px-2 py-1 text-xs font-bold rounded uppercase tracking-wider <%= status_classes[task.status] %>"><%= task.status.humanize %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Recent Comments -->
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg lg:col-span-2">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+      <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Recent Comments</h2>
+      <%= link_to "View All", admin_comments_path, class: "text-xs font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-wider" %>
+    </div>
+    <div class="divide-y divide-gray-200 dark:divide-gray-800">
+      <% @recent_comments.each do |comment| %>
+        <div class="px-6 py-3">
+          <div class="flex items-center justify-between mb-1">
+            <p class="text-sm font-medium text-gray-900 dark:text-white"><%= comment.user.email.split('@').first %></p>
+            <p class="text-xs text-gray-500"><%= time_ago_in_words(comment.created_at) %> ago</p>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400 truncate"><%= comment.content %></p>
+        </div>
+      <% end %>
+      <% if @recent_comments.empty? %>
+        <div class="px-6 py-8 text-center text-gray-500 text-sm">No comments yet.</div>
+      <% end %>
+    </div>
+  </div>
+</div>
