@@ -137,17 +137,22 @@ bundle exec rspec --format documentation
 
 **The only valid contribution is an RSpec spec file.**
 
+### Finding Work
+
+Check the [IRL2 Project Board](https://github.com/users/MarchandMD/projects/22) for open issues. Look for issues labeled **"help wanted"** — these are ready for contributors to pick up.
+
 ### How to Contribute
 
-1. **Fork the repository** on GitHub
-2. **Clone your fork** locally
-3. **Create a branch** from `main`:
+1. **Find an open issue** on the [project board](https://github.com/users/MarchandMD/projects/22)
+2. **Fork the repository** on GitHub
+3. **Clone your fork** locally
+4. **Create a branch** from `main`:
    ```bash
    git checkout -b spec/your-spec-description
    ```
-4. Write your RSpec spec file(s) inside the `spec/` directory
-5. Ensure your specs run without syntax errors: `bundle exec rspec path/to/your_spec.rb`
-6. Open a Pull Request on GitHub
+5. Write your RSpec spec file(s) inside the `spec/` directory
+6. Ensure your specs run without syntax errors: `bundle exec rspec path/to/your_spec.rb`
+7. Open a Pull Request on GitHub
 
 ### Pull Request Checklist
 
