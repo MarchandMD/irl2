@@ -194,11 +194,13 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  function initializeViewToggle() {
     const cardViewBtn = document.getElementById('cardViewBtn');
     const listViewBtn = document.getElementById('listViewBtn');
     const cardView = document.getElementById('cardView');
     const listView = document.getElementById('listView');
+
+    if (!cardViewBtn || !listViewBtn) return;
 
     // Load saved preference from localStorage
     const savedView = localStorage.getItem('usersViewPreference') || 'list';
@@ -233,5 +235,11 @@
       cardViewBtn.classList.remove('active', 'bg-gray-900', 'dark:bg-gray-100', 'text-white', 'dark:text-gray-900', 'font-bold');
       cardViewBtn.classList.add('bg-gray-300', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'font-semibold');
     }
-  });
+  }
+
+  // Initialize on initial page load
+  initializeViewToggle();
+
+  // Re-initialize after Turbo Drive navigation
+  document.addEventListener('turbo:load', initializeViewToggle);
 </script>
