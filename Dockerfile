@@ -72,4 +72,7 @@ ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80
+
+RUN echo "✅ IRL2 production build successful!"
+
 CMD ["./bin/thrust", "./bin/rails", "server"]

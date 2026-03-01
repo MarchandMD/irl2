@@ -68,6 +68,58 @@
     </section>
   <% end %>
 
+  <% if user_signed_in? %>
+    <!-- Latest Created Tasks -->
+    <section class="py-16 bg-gray-50 dark:bg-gray-900 -mx-5 px-5">
+      <div class="max-w-5xl mx-auto">
+        <div class="flex items-center justify-between mb-10">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Latest Created Tasks</h2>
+          <span class="text-sm text-gray-500 dark:text-gray-400 font-mono">NEW MISSIONS // INCOMING</span>
+        </div>
+
+        <div class="space-y-4">
+          <% if @recent_tasks.any? %>
+            <% @recent_tasks.each do |task| %>
+              <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-6 items-start">
+                <div class="w-full md:w-48 h-32 bg-gray-200 dark:bg-gray-700 rounded-md flex items-center justify-center text-gray-400">
+                  <span class="text-4xl">⚡️</span>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded uppercase"><%= task.status %></span>
+                    <span class="text-gray-500 text-sm font-mono">Task #<%= task.id %></span>
+                  </div>
+                  <h3 class="text-lg font-bold mb-2 dark:text-white">
+                    <%= link_to task.title, task_path(task), class: "hover:text-blue-600 dark:hover:text-blue-400" %>
+                  </h3>
+                  <% if task.description.present? %>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                      "<%= truncate(task.description, length: 150) %>"
+                    </p>
+                  <% end %>
+                  <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                    <span>Created by <strong><%= link_to task.user.email.split('@').first, user_path(task.user), class: "hover:text-blue-600 dark:hover:text-blue-400" %></strong></span>
+                    <span>•</span>
+                    <span><%= time_ago_in_words(task.created_at) %> ago</span>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+              <p class="text-lg mb-4">No tasks created yet...</p>
+              <p class="text-sm">Be the first to create a task for others to complete!</p>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="text-center mt-10">
+          <a href="/tasks" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">View All Tasks &rarr;</a>
+        </div>
+      </div>
+    </section>
+  <% end %>
+
   <!-- Recent Activity / Flavor Section -->
   <section class="py-16 bg-gray-50 dark:bg-gray-900 -mx-5 px-5">
     <div class="max-w-5xl mx-auto">
