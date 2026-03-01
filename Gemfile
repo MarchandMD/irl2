@@ -51,6 +51,10 @@ group :development, :test do
 
   # RSpec testing framework
   gem "rspec-rails", "~> 8.0"
+
+  # Integration testing
+  gem "capybara"
+  gem "selenium-webdriver"
 end
 
 group :development do
