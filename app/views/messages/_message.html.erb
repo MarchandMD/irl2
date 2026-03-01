@@ -1,0 +1,18 @@
+<div class="flex items-start gap-3 py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/50 transition group">
+  <div class="flex-shrink-0 mt-0.5">
+    <% if message.user.profile_photo.attached? %>
+      <%= image_tag message.user.profile_photo, class: "w-8 h-8 rounded-full object-cover border border-gray-300 dark:border-gray-700" %>
+    <% else %>
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center text-white text-xs font-bold uppercase">
+        <%= message.user.email[0] %>
+      </div>
+    <% end %>
+  </div>
+  <div class="flex-1 min-w-0">
+    <div class="flex items-baseline gap-2">
+      <span class="text-sm font-bold text-gray-900 dark:text-white"><%= message.user.email.split('@').first %></span>
+      <span class="text-xs text-gray-400 dark:text-gray-600"><%= message.created_at.strftime("%-I:%M %p") %></span>
+    </div>
+    <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed break-words"><%= message.content %></p>
+  </div>
+</div>

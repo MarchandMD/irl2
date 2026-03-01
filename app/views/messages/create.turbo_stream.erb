@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "message-form" do %>
+  <%= render partial: "messages/form", locals: { channel: @channel, message: Message.new } %>
+<% end %>

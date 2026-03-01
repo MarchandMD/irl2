@@ -20,7 +20,7 @@
               <% end %>
               <div>
                 <%= link_to user_path(submission.user), class: "font-bold text-gray-900 dark:text-white hover:text-emerald-500 dark:hover:text-emerald-400 transition" do %>
-                  <%= submission.user.username || submission.user.email.split('@').first %>
+                  <%= submission.user.email.split('@').first %>
                 <% end %>
                 <p class="text-xs text-gray-500 dark:text-gray-400">
                   <%= time_ago_in_words(submission.created_at) %> ago
@@ -30,7 +30,7 @@
 
             <div class="mb-3">
               <%= link_to task_path(submission.task), class: "text-lg font-bold text-gray-900 dark:text-white hover:text-emerald-500 dark:hover:text-emerald-400 transition" do %>
-                <%= submission.task.name %>
+                <%= submission.task.title %>
               <% end %>
               <% if submission.task.description.present? %>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -39,16 +39,16 @@
               <% end %>
             </div>
 
-            <% if submission.proof.present? %>
+            <% if submission.submission_text.present? %>
               <div class="bg-gray-50 dark:bg-gray-800 rounded p-3 text-sm text-gray-700 dark:text-gray-300">
-                <%= submission.proof %>
+                <%= submission.submission_text %>
               </div>
             <% end %>
           </div>
 
           <div class="flex flex-col items-end gap-2">
             <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 text-xs font-bold rounded-full uppercase">
-              <%= submission.task.points %> pts
+              <%= submission.task.status %>
             </span>
           </div>
         </div>

@@ -79,7 +79,7 @@ docker run -p 3000:3000 irl2
 - **Database console**: `rails dbconsole`
 - **Routes**: `rails routes`
 - **Security checks**: `bin/brakeman`
-- **Code linting**: `bin/lint` (or `bin/rubocop`)
+- **Code linting**: `bundle exec standardrb` (see [Linting](#linting) below)
 
 ## Configuration
 
@@ -118,6 +118,26 @@ Run tests with documentation format:
 ```bash
 bundle exec rspec --format documentation
 ```
+
+## Linting
+
+This project uses [Standard Ruby](https://github.com/standardrb/standard) for code style enforcement. Standard is a zero-config Ruby linter/formatter built on top of RuboCop.
+
+### Check for offenses
+
+```bash
+bundle exec standardrb
+```
+
+### Auto-fix offenses
+
+```bash
+bundle exec standardrb --fix
+```
+
+### CI
+
+Linting runs in CI via `bin/rubocop -f github`. The Standard gem configures RuboCop under the hood, so both commands enforce the same rules.
 
 ## Contributing
 

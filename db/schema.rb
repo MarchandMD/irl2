@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_28_044119) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_01_030000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_28_044119) do
     t.index ["user_id"], name: "index_bookmarks_on_user_id"
   end
 
+  create_table "channels", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_channels_on_name", unique: true
+  end
+
   create_table "comments", force: :cascade do |t|
     t.bigint "commentable_id", null: false
     t.string "commentable_type", null: false
@@ -61,6 +69,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_28_044119) do
     t.bigint "user_id", null: false
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "channel_id", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["channel_id"], name: "index_messages_on_channel_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -114,11 +132,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_28_044119) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "group"
+    t.string "provider"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
+    t.string "uid"
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -127,6 +148,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_28_044119) do
   add_foreign_key "bookmarks", "tasks"
   add_foreign_key "bookmarks", "users"
   add_foreign_key "comments", "users"
+  add_foreign_key "messages", "channels"
+  add_foreign_key "messages", "users"
   add_foreign_key "tasks", "users"
   add_foreign_key "upvotes", "tasks"
   add_foreign_key "upvotes", "users"
