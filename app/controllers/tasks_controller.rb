@@ -3,7 +3,7 @@ class TasksController < ApplicationController
   before_action :set_task, only: [:show, :upvote, :remove_upvote, :bookmark, :remove_bookmark]
 
   def index
-    @tasks = Task.includes(:user).all
+    @tasks = Task.includes(:user).active
 
     # Search filter
     if params[:q].present?

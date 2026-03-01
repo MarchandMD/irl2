@@ -116,22 +116,6 @@
           </div>
         </div>
 
-        <!-- Stats -->
-        <div class="grid grid-cols-3 gap-3 mb-4 pt-4 border-t-2 border-gray-300 dark:border-gray-600">
-          <div class="text-center">
-            <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.count %></div>
-            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Created</div>
-          </div>
-          <div class="text-center">
-            <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:upvotes_count) %></div>
-            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Upvotes</div>
-          </div>
-          <div class="text-center">
-            <div class="text-xl font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:submissions_count) %></div>
-            <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Completed</div>
-          </div>
-        </div>
-
         <!-- Member Since -->
         <div class="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
           <span class="font-medium">Joined <%= time_ago_in_words(user.created_at) %> ago</span>
@@ -184,22 +168,6 @@
             <p class="text-sm text-gray-600 dark:text-gray-400">
               Joined <%= time_ago_in_words(user.created_at) %> ago
             </p>
-          </div>
-
-          <!-- Stats -->
-          <div class="hidden md:flex items-center gap-6 px-4">
-            <div class="text-center">
-              <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.count %></div>
-              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Created</div>
-            </div>
-            <div class="text-center">
-              <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:upvotes_count) %></div>
-              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Upvotes</div>
-            </div>
-            <div class="text-center">
-              <div class="text-lg font-bold text-gray-900 dark:text-white"><%= user.tasks.sum(:submissions_count) %></div>
-              <div class="text-xs text-gray-700 dark:text-gray-300 uppercase font-semibold">Tasks Completed</div>
-            </div>
           </div>
 
           <!-- View Profile Link -->

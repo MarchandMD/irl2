@@ -177,18 +177,20 @@
   </section>
 
   <!-- CTA Section -->
-  <section class="text-center bg-gradient-to-r from-blue-500 to-emerald-500 text-white rounded-3xl p-12">
-    <h2 class="text-3xl font-bold mb-4">Ready to Play Your City?</h2>
-    <p class="text-xl mb-8 opacity-90">
-      Join our community of explorers and turn everyday life into an adventure.
-    </p>
-    <div class="flex flex-col sm:flex-row justify-center gap-4">
-      <a href="/users/sign_up" class="px-8 py-4 bg-white text-emerald-600 font-bold text-lg rounded-full hover:bg-gray-100 transition shadow-lg">
-        Sign Up Now
-      </a>
-      <a href="/tasks" class="px-8 py-4 bg-transparent border-2 border-white text-white font-bold text-lg rounded-full hover:bg-white/10 transition">
-        Browse Tasks
-      </a>
-    </div>
-  </section>
+  <% unless user_signed_in? %>
+    <section class="text-center bg-gradient-to-r from-blue-500 to-emerald-500 text-white rounded-3xl p-12">
+      <h2 class="text-3xl font-bold mb-4">Ready to Play Your City?</h2>
+      <p class="text-xl mb-8 opacity-90">
+        Join our community of explorers and turn everyday life into an adventure.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="/users/sign_up" class="px-8 py-4 bg-white text-emerald-600 font-bold text-lg rounded-full hover:bg-gray-100 transition shadow-lg">
+          Sign Up Now
+        </a>
+        <a href="/tasks" class="px-8 py-4 bg-transparent border-2 border-white text-white font-bold text-lg rounded-full hover:bg-white/10 transition">
+          Browse Tasks
+        </a>
+      </div>
+    </section>
+  <% end %>
 </div>
