@@ -268,7 +268,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_160002) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.boolean "admin"
+    t.boolean "admin", default: false, null: false
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
