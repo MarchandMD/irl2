@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     resources :submissions, only: [:index, :show, :destroy]
   end
 
-  devise_for :users, controllers: {registrations: "users/registrations"}
+  devise_for :users, controllers: {registrations: "users/registrations", omniauth_callbacks: "users/omniauth_callbacks"}
   devise_scope :user do
     delete "users/registration/remove_profile_photo", to: "users/registrations#remove_profile_photo", as: :remove_profile_photo_user_registration
   end
@@ -48,5 +48,8 @@ Rails.application.routes.draw do
   end
   resources :groups, only: [:index]
   get "/about", to: "about#index"
+  resources :channels, only: %i[index show] do
+    resources :messages, only: %i[create]
+  end
   root "home#index"
 end

@@ -7,10 +7,10 @@ module Admin
       @tasks = @tasks.search(params[:search]) if params[:search].present?
       @tasks = @tasks.where(status: params[:status]) if params[:status].present?
 
-      if params[:filter] == "archived"
-        @tasks = @tasks.archived
+      @tasks = if params[:filter] == "archived"
+        @tasks.archived
       else
-        @tasks = @tasks.active
+        @tasks.active
       end
     end
 

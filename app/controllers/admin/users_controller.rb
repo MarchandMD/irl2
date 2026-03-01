@@ -5,10 +5,10 @@ module Admin
     def index
       @users = User.order(created_at: :desc)
       @users = @users.where("email ILIKE ?", "%#{params[:search]}%") if params[:search].present?
-      if params[:filter] == "archived"
-        @users = @users.archived
+      @users = if params[:filter] == "archived"
+        @users.archived
       else
-        @users = @users.active
+        @users.active
       end
     end
 
@@ -56,7 +56,7 @@ module Admin
         archived_count += 1
       end
 
-      redirect_to admin_users_path, notice: "#{archived_count} #{'user'.pluralize(archived_count)} archived successfully."
+      redirect_to admin_users_path, notice: "#{archived_count} #{"user".pluralize(archived_count)} archived successfully."
     end
 
     private
