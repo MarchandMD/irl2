@@ -48,5 +48,8 @@ Rails.application.routes.draw do
   end
   resources :groups, only: [:index]
   get "/about", to: "about#index"
+  resources :channels, only: %i[index show] do
+    resources :messages, only: %i[create]
+  end
   root "home#index"
 end

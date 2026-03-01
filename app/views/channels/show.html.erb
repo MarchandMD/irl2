@@ -1,0 +1,16 @@
+<%= turbo_stream_from @channel %>
+
+<h1><%= @channel.name %></h1>
+
+<div id="messages">
+  <% @messages.each do |message| %>
+    <div>
+      <strong><%= message.user.email %></strong>: <%= message.content %>
+    </div>
+  <% end %>
+</div>
+
+<%= form_with model: [@channel, @message], id: "message-form" do |f| %>
+  <%= f.text_field :content, placeholder: "Type a message...", autofocus: true %>
+  <%= f.submit "Send" %>
+<% end %>

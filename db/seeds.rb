@@ -44,3 +44,10 @@ statuses = ["open", "in_progress", "completed", "closed"]
 end
 
 puts "Seed data created: #{User.count} users and #{Task.count} tasks"
+
+# Create General channel
+puts "Creating General channel..."
+Channel.find_or_create_by!(name: "General") do |channel|
+  channel.description = "The general chat channel"
+end
+puts "Channels: #{Channel.count}"
