@@ -77,4 +77,4 @@ gem "standard", "~> 1.54"
 gem "rubocop", "~> 1.81"
 
 gem "omniauth-google-oauth2", "~> 1.2"
-gem "omniauth-rails_csrf_protection", "~> 1.0"
+gem "omniauth-rails_csrf_protection", "~> 2.0"
