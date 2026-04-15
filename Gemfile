@@ -68,7 +68,7 @@ gem "tidewave", "~> 0.4.2", group: :development
 
 gem "devise", "~> 5.0"
 
-gem "faker", "~> 3.6"
+gem "faker", "~> 3.7"
 
 gem "factory_bot_rails", "~> 6.5", groups: [:development, :test]
 
